@@ -10,6 +10,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+
+  followedBy User[] @relation("UserFollows")
+  following  User[] @relation("UserFollows")
+
+  tweets      Tweet[] @relation(name: "owner_tweet")
+  tweetsLiked Tweet[] @relation(name: "user_tweets_like")
+
+  comments      Comment[] @relation(name: "owner_comment")
+  commentsLiked Comment[] @relation(name: "user_comments_like")
+}
+
+model Tweet {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  body    String
+  owner   User   @relation(name: "owner_tweet", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+
+  comments Comment[]
+
+  likes User[] @relation(name: "user_tweets_like")
+
+  @@index([id, ownerId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  body    String
+  owner   User   @relation(name: "owner_comment", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+
+  tweet   Tweet  @relation(fields: [tweetId], references: [id])
+  tweetId String
+
+  likes User[] @relation(name: "user_comments_like")
+}
+
 model Account {
   id                 String    @id @default(cuid())
   userId             String
@@ -35,18 +87,6 @@ model Session {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id])
-}
-
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
 }
 
 model VerificationRequest {
