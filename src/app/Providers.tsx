@@ -9,12 +9,12 @@ const queryClient = new QueryClient();
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <SessionProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider>
           {children}
           <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </SessionProvider>
+        </SessionProvider>
+      </QueryClientProvider>
     </>
   );
 };

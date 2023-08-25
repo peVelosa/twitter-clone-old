@@ -1,9 +1,16 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GithubProvider from "next-auth/providers/github";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/libs/prisma";
 
-const authOptions: NextAuthOptions = {
+export interface GithubEmail extends Record<string, any> {
+  email: string;
+  primary: boolean;
+  verified: boolean;
+  visibility: "public" | "private";
+}
+
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -31,7 +38,6 @@ const authOptions: NextAuthOptions = {
     },
   },
 };
-
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
