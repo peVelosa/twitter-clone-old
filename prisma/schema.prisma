@@ -21,6 +21,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  userName   String @unique
   followedBy User[] @relation("UserFollows")
   following  User[] @relation("UserFollows")
 
