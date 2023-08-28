@@ -1,10 +1,22 @@
+import type { FC } from "react";
 import Link from "next/link";
-import ImageWithFallback from "../ImageWithFallback";
+import ImageWithFallback from "@/components/ImageWithFallback";
+import { FaTimes } from "react-icons/fa";
 
-type TweetHeaderProps = { image: string; userName: string; name: string };
+type ModalNewTweetHeaderProps = {
+  image: string;
+  userName: string;
+  name: string;
+  closeModal: () => void;
+};
 
-const TweetHeader = ({ image, userName, name }: TweetHeaderProps) => {
-  const href = `/profile/${userName}`;
+const ModalNewTweetHeader: FC<ModalNewTweetHeaderProps> = ({
+  image,
+  userName,
+  name,
+  closeModal,
+}) => {
+  const href = `/${userName}`;
 
   return (
     <>
@@ -28,8 +40,17 @@ const TweetHeader = ({ image, userName, name }: TweetHeaderProps) => {
           <p className="text-white-600">@{userName}</p>
         </Link>
       </div>
+      <button
+        className="p-2 hover:bg-red-400 rounded-full -mt-2"
+        onClick={closeModal}
+      >
+        <FaTimes
+          className="fill-red-700"
+          size={20}
+        />
+      </button>
     </>
   );
 };
 
-export default TweetHeader;
+export default ModalNewTweetHeader;

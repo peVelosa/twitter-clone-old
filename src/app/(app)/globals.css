@@ -2,3 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.track {
+  stroke-width: 3;
+  stroke: black;
+  fill: none;
+}
+
+.progress {
+  stroke-width: 3;
+  stroke-linecap: round;
+  fill: none;
+  stroke-dasharray: 65;
+  stroke-dashoffset: var(--stroke-off-set);
+}

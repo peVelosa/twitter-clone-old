@@ -1,7 +1,11 @@
-import React from "react";
+import PageTitle from "@/components/PageTitle";
 
-const page = () => {
-  return <div>page</div>;
+const ServerNotificationsPage = () => {
+  return (
+    <>
+      <PageTitle title="notifications" />
+    </>
+  );
 };
 
-export default page;
+export default ServerNotificationsPage;

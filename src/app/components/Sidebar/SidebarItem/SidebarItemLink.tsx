@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import Link, { type LinkProps } from "next/link";
 import { twMerge } from "tailwind-merge";
 
@@ -6,12 +7,12 @@ interface SidebarItemLinkProps extends LinkProps {
   className?: React.ComponentProps<"a">["className"];
 }
 
-const SidebarItemLink = ({
+const SidebarItemLink: FC<SidebarItemLinkProps> = ({
   href,
   children,
   className,
   ...rest
-}: SidebarItemLinkProps) => {
+}) => {
   return (
     <Link
       href={href}

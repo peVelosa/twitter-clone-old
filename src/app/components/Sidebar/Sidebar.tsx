@@ -3,15 +3,14 @@ import { getServerSession } from "next-auth/next";
 import { FaUser, FaBell, FaHome, FaTwitter } from "react-icons/fa";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { SidebarItem } from "./SidebarItem/index";
-import SignIn from "../SignButton/SignIn";
-import SignOut from "../SignButton/SignOut";
 import SidebarNewTweet from "./SidebarNewTweet";
+import Sign from "@/components/Sign";
 
 const Sidebar = async () => {
   const session = await getServerSession(authOptions);
 
   return (
-    <aside className="flex gap-4 flex-col pl-1">
+    <aside className="flex gap-4 flex-col pl-1 py-4">
       <SidebarItem.Root className={""}>
         <SidebarItem.Link
           href={"/"}
@@ -41,16 +40,16 @@ const Sidebar = async () => {
       {session?.user.userName ? (
         <>
           <SidebarItem.Root>
-            <SidebarItem.Link href={`/profile/${session.user.userName}`}>
+            <SidebarItem.Link href={`/${session.user.userName}`}>
               <SidebarItem.Icon icon={FaUser} />
               <SidebarItem.Label label="profile" />
             </SidebarItem.Link>
           </SidebarItem.Root>
 
-          <SignOut />
+          <Sign mode="signOut" />
         </>
       ) : (
-        <SignIn />
+        <Sign mode="signIn" />
       )}
       <SidebarNewTweet />
     </aside>

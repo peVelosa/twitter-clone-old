@@ -1,16 +1,16 @@
 "use client";
-import React, { HTMLAttributes } from "react";
+import { type HTMLAttributes, FC } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface SidebarItemButtonProps extends HTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-const SidebarItemButton = ({
+const SidebarItemButton: FC<SidebarItemButtonProps> = ({
   children,
   className,
   ...rest
-}: SidebarItemButtonProps) => {
+}) => {
   return (
     <button
       {...rest}

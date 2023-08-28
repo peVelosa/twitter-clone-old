@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, type FC } from "react";
 import Image, { type ImageProps } from "next/image";
 
-const ImageWithFallback = ({ src, alt, ...rest }: ImageProps) => {
+const ImageWithFallback: FC<ImageProps> = ({ src, alt, ...rest }) => {
   const [imgSrc, setImgSrc] = useState(src);
 
   return (

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { type ReactNode, FC } from "react";
 import { twMerge } from "tailwind-merge";
 
 type SidebarItemRootProps = {
@@ -6,7 +6,7 @@ type SidebarItemRootProps = {
   className?: React.ComponentProps<"div">["className"];
 };
 
-const SidebarItemRoot = ({ children, className }: SidebarItemRootProps) => {
+const SidebarItemRoot: FC<SidebarItemRootProps> = ({ children, className }) => {
   return (
     <div
       className={twMerge(
