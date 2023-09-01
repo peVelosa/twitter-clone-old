@@ -2,16 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --stroke-dasharray: 75;
+  --stroke-off-set: 75;
+}
+
 .track {
   stroke-width: 3;
-  stroke: black;
+  stroke: white;
   fill: none;
 }
 
 .progress {
-  stroke-width: 3;
+  stroke-width: 3.5;
   stroke-linecap: round;
   fill: none;
-  stroke-dasharray: 65;
+  stroke-dasharray: var(--stroke-dasharray);
   stroke-dashoffset: var(--stroke-off-set);
+}
+
+#modal:empty {
+  display: none;
+  user-select: none;
+  cursor: inherit;
+  pointer-events: none;
 }

@@ -1,25 +1,24 @@
 "use client";
 import { useRef, useState, type ElementRef, FC } from "react";
-import { useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
-import { adjustTextAreaHeight, focusInput } from "@/libs/helpers";
 import axios from "@/libs/axios";
+import { adjustTextAreaHeight, focusInput } from "@/libs/helpers";
 
-import SpinnerCounter from "@/components/SpinnerCounter";
-import ModalNewTweetHeader from "./ModalNewTweetHeader";
+import CircularProgress from "@/components/CircularProgress";
+import Link from "next/link";
+import ImageWithFallback from "@/components/ImageWithFallback";
+import type { Session } from "next-auth";
 
-type ModalNewTweetProps = {
-  closeModal: () => void;
+type NewTweetProps = {
+  className?: React.ComponentProps<"div">["className"];
+  session: Session | null;
 };
 
-const ModalNewTweet: FC<ModalNewTweetProps> = ({ closeModal }) => {
-  const { data: session } = useSession();
-
+const NewTweet: FC<NewTweetProps> = ({ className, session }) => {
   const { mutate: _post } = useMutation({
     mutationKey: ["tweets"],
     mutationFn: async ({ tweetBody }: { tweetBody: string }) => {
       setTweetInput("");
-      closeModal();
       await axios.post("/tweet", { body: tweetBody, userId });
     },
   });
@@ -38,24 +37,32 @@ const ModalNewTweet: FC<ModalNewTweetProps> = ({ closeModal }) => {
   }
   const tweetLength = tweetInput.length;
 
+  if (!session) {
+    return <></>;
+  }
   const {
     user: { userName, image, name, id: userId },
-  } = session!;
+  } = session;
 
   return (
     <>
       <div
-        className="bg-slate-700 w-fit min-h-44 mx-auto mt-44 p-4 rounded-md md:max-w-xl md:w-full"
         onClick={() => focusInput(tweetRef.current)}
+        className={className}
       >
         <div className="flex justify-between items-start mb-4">
-          <ModalNewTweetHeader
-            image={image}
-            name={name}
-            userName={userName}
-            closeModal={closeModal}
-            key={userName}
-          />
+          <Link
+            href={`/${userName}`}
+            className="w-fit block"
+          >
+            <ImageWithFallback
+              src={image}
+              alt="profile image"
+              width={42}
+              height={42}
+              className="rounded-full hover:scale-110 cursor-pointer w-fit"
+            />
+          </Link>
         </div>
         <textarea
           ref={tweetRef}
@@ -81,7 +88,7 @@ const ModalNewTweet: FC<ModalNewTweetProps> = ({ closeModal }) => {
             / 256
           </div>
           <div className="flex items-center justify-end gap-4">
-            <SpinnerCounter length={tweetLength} />
+            <CircularProgress length={tweetLength} />
             <button
               onClick={() => postTweet({ tweetBody: tweetInput })}
               className="px-4 py-1 bg-sky-500 rounded-full hover:bg-sky-600 disabled:bg-sky-300 w-fit block"
@@ -96,4 +103,4 @@ const ModalNewTweet: FC<ModalNewTweetProps> = ({ closeModal }) => {
   );
 };
 
-export default ModalNewTweet;
+export default NewTweet;

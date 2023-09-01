@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FC } from "react";
 import { FaFeatherAlt } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import { SidebarItem } from "./SidebarItem";
 import Modal from "@/components/Modal/Modal";
-import NewTweet from "@/components/Modal/Templates/NewTweet/ModalNewTweet";
+import NewTweet from "@/components/Tweet/NewTweet";
+import type { Session } from "next-auth";
 
-const SidebarNewTweet = () => {
-  const { data: session } = useSession();
+type SidebarNewTweetProps = {
+  session: Session | null;
+};
 
+const SidebarNewTweet: FC<SidebarNewTweetProps> = ({ session }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const onOpen = () => setIsOpen(true);
@@ -40,7 +43,7 @@ const SidebarNewTweet = () => {
         isOpen={isOpen}
         close={onClose}
       >
-        <NewTweet closeModal={onClose} />
+        <NewTweet session={session} />
       </Modal>
     </>
   );

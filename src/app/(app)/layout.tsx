@@ -6,7 +6,7 @@ import { Inter } from "next/font/google";
  * Global Provider
  */
 
-import Providers from "../Providers";
+import Providers from "./Providers";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import Modal from "@/components/Modal/Modal";
 const inter = Inter({ subsets: ["latin"] });
@@ -22,8 +22,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} overflow-x-hidden`}>
-        <div className="min-h-screen w-screen bg-gray-900 text-white">
+      <body className={`${inter.className} overflow-x-hidden text-white`}>
+        <div className="min-h-screen w-screen bg-gray-900">
           <div className="mx-auto flex w-full max-w-4xl gap-2 overflow-x-hidden">
             <Providers>
               <Sidebar />
@@ -33,6 +33,7 @@ export default function RootLayout({
             </Providers>
           </div>
         </div>
+        <div id="modal"></div>
       </body>
     </html>
   );

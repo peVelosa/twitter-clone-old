@@ -10,7 +10,7 @@ const Sidebar = async () => {
   const session = await getServerSession(authOptions);
 
   return (
-    <aside className="flex gap-4 flex-col pl-1 py-4">
+    <aside className="flex gap-4 flex-col pl-1 py-4 sm:pl-3">
       <SidebarItem.Root className={""}>
         <SidebarItem.Link
           href={"/"}
@@ -51,7 +51,7 @@ const Sidebar = async () => {
       ) : (
         <Sign mode="signIn" />
       )}
-      <SidebarNewTweet />
+      <SidebarNewTweet session={session} />
     </aside>
   );
 };

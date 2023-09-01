@@ -3,8 +3,36 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
-    const res = await prisma.tweet.findMany({});
-    return NextResponse.json({ data: res }, { status: 200 });
+    const tweets = await prisma.tweet.findMany({
+      select: {
+        id: true,
+        body: true,
+        comments: true,
+        owner: {
+          select: {
+            userName: true,
+            name: true,
+            image: true,
+          },
+        },
+        likes: {
+          select: {
+            id: true,
+          },
+        },
+        ownerId: true,
+        _count: {
+          select: {
+            comments: true,
+            likes: true,
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+    return NextResponse.json(tweets, { status: 200 });
   } catch {
     return NextResponse.json({}, { status: 404 });
   }
