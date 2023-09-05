@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState, type ElementRef, FC } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { adjustTextAreaHeight, focusInput } from "@/libs/helpers";
 
@@ -15,11 +15,16 @@ type NewTweetProps = {
 };
 
 const NewTweet: FC<NewTweetProps> = ({ className, session }) => {
+  const queryClient = useQueryClient();
+
   const { mutate: _post } = useMutation({
     mutationKey: ["tweets"],
     mutationFn: async ({ tweetBody }: { tweetBody: string }) => {
       setTweetInput("");
       await axios.post("/tweet", { body: tweetBody, userId });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["tweets"]);
     },
   });
 

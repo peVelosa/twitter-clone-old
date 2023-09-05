@@ -3,8 +3,8 @@
 import { useSession } from "next-auth/react";
 import { FaTrash } from "react-icons/fa";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { FC } from "react";
 import { deleteTweet } from "@/libs/api";
+import type { FC } from "react";
 
 type TweetDeleteProps = {
   ownerId: string;
