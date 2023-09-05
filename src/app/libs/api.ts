@@ -11,10 +11,6 @@ export const getAllTweets = async (): Promise<TweetType[] | []> => {
   return res.data;
 };
 
-export const deleteTweet = async (id: string) => {
-  await axios.delete(`/tweet/${id}`);
-};
-
 export const getSingleTweet = async (id: string): Promise<any> => {
   const res = await axios.get<any>(`/tweet/${id}`);
 
@@ -23,4 +19,26 @@ export const getSingleTweet = async (id: string): Promise<any> => {
   }
 
   return res.data;
+};
+
+/**
+ * Like
+ * Unlike
+ * Comment
+ * Delete
+ */
+
+type ActionProps = {
+  userId: string;
+  tweetId: string;
+};
+
+export const likeTweet = async ({ tweetId, userId }: ActionProps) => {
+  await axios.put(`/tweet/${tweetId}?like=like`, { userId });
+};
+export const unlikeTweet = async ({ tweetId, userId }: ActionProps) => {
+  await axios.put(`/tweet/${tweetId}?like=unlike`, { userId });
+};
+export const deleteTweet = async ({ tweetId, userId }: ActionProps) => {
+  await axios.delete(`/tweet/${tweetId}`, { data: { userId } });
 };

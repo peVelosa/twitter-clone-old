@@ -14,7 +14,7 @@ type TweetProps = {
 
 const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
   const router = useRouter();
-  const isUser = tweet.likes.some((tweet) => userId === tweet.id);
+  const isUser = tweet.likes.some((user) => userId === user.id);
 
   return (
     <>
@@ -43,10 +43,15 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
             tweetId={tweet.id}
           />
           <p className="whitespace-pre">{tweet.body}</p>
-          <div className="flex items-center gap-4 mt-4">
+          <div
+            className="flex items-center gap-4 mt-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <LikeButton
               isUser={isUser}
               likes={tweet._count.likes}
+              tweetId={tweet.id}
+              userId={userId}
             />
             <CommentButton comments={tweet._count.comments} />
           </div>

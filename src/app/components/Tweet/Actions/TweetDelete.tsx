@@ -18,7 +18,7 @@ const TweetDelete: FC<TweetDeleteProps> = ({ tweetId, ownerId }) => {
   const mutate = useMutation({
     mutationKey: ["tweets"],
     mutationFn: async () => {
-      await deleteTweet(tweetId);
+      await deleteTweet({ tweetId, userId: ownerId });
     },
     onSettled: () => {
       queryClient.invalidateQueries(["tweets"]);
