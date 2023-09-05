@@ -8,7 +8,7 @@ import type { TweetType } from "app/types/api";
 import type { Session } from "next-auth";
 
 type ClientHomePageProps = {
-  initialData: TweetType[];
+  initialData: TweetType[] | [];
   session: Session | null;
 };
 
@@ -16,7 +16,7 @@ const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
   const { data } = useQuery<typeof initialData>({
     queryKey: ["tweets"],
     queryFn: async () => {
-      return await getAllTweets<TweetType[] | []>();
+      return await getAllTweets();
     },
     initialData: initialData,
   });

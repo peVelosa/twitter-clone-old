@@ -35,10 +35,12 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
             />
           </Link>
         </div>
-        <div>
+        <div className="w-full">
           <TweetHeader
             name={tweet.owner.name}
             userName={tweet.owner.userName}
+            ownerId={tweet.ownerId}
+            tweetId={tweet.id}
           />
           <p className="whitespace-pre">{tweet.body}</p>
           <div className="flex items-center gap-4 mt-4">

@@ -48,8 +48,6 @@ const Modal = ({ isOpen, close, children }: ModalProps) => {
                 onClick={close}
               >
                 {window.innerWidth > 640 ? (
-                  true
-                ) : false ? (
                   <FaTimes className="fill-white" />
                 ) : (
                   <FaArrowLeft className="fill-white" />

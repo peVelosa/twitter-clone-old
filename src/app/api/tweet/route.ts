@@ -7,7 +7,6 @@ export async function GET(request: Request) {
       select: {
         id: true,
         body: true,
-        comments: true,
         owner: {
           select: {
             userName: true,

@@ -1,12 +1,20 @@
 import Link from "next/link";
+import TweetDelete from "./Actions/TweetDelete";
 import type { FC } from "react";
 
 type TweetHeaderProps = {
   userName: string;
   name: string;
+  ownerId: string;
+  tweetId: string;
 };
 
-const TweetHeader: FC<TweetHeaderProps> = ({ userName, name }) => {
+const TweetHeader: FC<TweetHeaderProps> = ({
+  userName,
+  name,
+  ownerId,
+  tweetId,
+}) => {
   return (
     <>
       <div
@@ -19,6 +27,10 @@ const TweetHeader: FC<TweetHeaderProps> = ({ userName, name }) => {
         <Link href={`/${userName}`}>
           <span className="text-white/70">@{userName}</span>
         </Link>
+        <TweetDelete
+          ownerId={ownerId}
+          tweetId={tweetId}
+        />
       </div>
     </>
   );
