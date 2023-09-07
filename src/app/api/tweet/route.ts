@@ -1,8 +1,46 @@
 import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+const MAX_TWEETS_PER_REQUEST = 10;
+
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const cursor = searchParams.get("cursor");
+
+    if (!cursor || cursor === "0") {
+      const tweets = await prisma.tweet.findMany({
+        select: {
+          id: true,
+          body: true,
+          owner: {
+            select: {
+              userName: true,
+              name: true,
+              image: true,
+            },
+          },
+          likes: {
+            select: {
+              id: true,
+            },
+          },
+          ownerId: true,
+          _count: {
+            select: {
+              comments: true,
+              likes: true,
+            },
+          },
+        },
+        orderBy: {
+          updatedAt: "desc",
+        },
+        take: MAX_TWEETS_PER_REQUEST,
+      });
+      return NextResponse.json(tweets, { status: 200 });
+    }
+
     const tweets = await prisma.tweet.findMany({
       select: {
         id: true,
@@ -30,6 +68,11 @@ export async function GET(request: Request) {
       orderBy: {
         updatedAt: "desc",
       },
+      take: MAX_TWEETS_PER_REQUEST,
+      cursor: {
+        id: cursor,
+      },
+      skip: 1,
     });
     return NextResponse.json(tweets, { status: 200 });
   } catch {

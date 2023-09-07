@@ -30,6 +30,7 @@ const TweetDelete: FC<TweetDeleteProps> = ({ tweetId, ownerId }) => {
       <button
         className="p-2 hover:bg-red-300 rounded-full ml-auto block"
         onClick={() => mutate.mutate()}
+        disabled={!session?.user.id}
       >
         {session?.user.id === ownerId ? (
           <FaTrash className="fill-red-600" />

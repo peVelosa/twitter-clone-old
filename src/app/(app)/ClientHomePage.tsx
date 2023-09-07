@@ -1,9 +1,8 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import Tweet from "@/components/Tweet/Tweet";
 import { getAllTweets } from "@/libs/api";
-import { useEffect, type FC } from "react";
-import { useRouter } from "next/navigation";
+import { type FC } from "react";
 import type { TweetType } from "app/types/api";
 import type { Session } from "next-auth";
 
@@ -13,23 +12,28 @@ type ClientHomePageProps = {
 };
 
 const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
-  const { data } = useQuery<typeof initialData>({
+  const { data: tweets } = useInfiniteQuery<typeof initialData>({
     queryKey: ["tweets"],
-    queryFn: async () => {
-      return await getAllTweets();
+    queryFn: getAllTweets,
+    initialData: {
+      pageParams: [undefined],
+      pages: [initialData],
     },
-    initialData: initialData,
+    getNextPageParam: (lastPage, pages) =>
+      lastPage[lastPage.length - 1]?.id ?? undefined,
   });
 
   return (
     <div>
-      {data?.map((tweet) => (
-        <Tweet
-          key={tweet.id}
-          userId={session?.user.id}
-          tweet={tweet}
-        />
-      ))}
+      {tweets?.pages.map((page) =>
+        page.map((tweet) => (
+          <Tweet
+            key={tweet.id}
+            userId={session?.user.id}
+            tweet={tweet}
+          />
+        )),
+      )}
     </div>
   );
 };

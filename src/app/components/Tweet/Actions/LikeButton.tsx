@@ -3,6 +3,7 @@ import { FaHeart } from "react-icons/fa";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { likeTweet, unlikeTweet } from "@/libs/api";
 import type { FC } from "react";
+import { useSession } from "next-auth/react";
 
 type LikeButtonProps = {
   isUser: boolean;
@@ -17,6 +18,8 @@ const LikeButton: FC<LikeButtonProps> = ({
   tweetId,
   userId,
 }) => {
+  const { data: session } = useSession();
+
   const queryClient = useQueryClient();
 
   const mutate = useMutation({
@@ -35,6 +38,7 @@ const LikeButton: FC<LikeButtonProps> = ({
       <button
         className="inline-flex items-center gap-2"
         onClick={() => mutate.mutate()}
+        disabled={!session?.user.id}
       >
         <FaHeart className={`${isUser ? "fill-red-600" : null}`} />
         {likes}

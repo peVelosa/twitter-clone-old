@@ -8,7 +8,7 @@ import ClientHomePage from "./ClientHomePage";
 const ServerHomePage = async () => {
   const session = await getServerSession(authOptions);
 
-  const initialTweets = await getAllTweets();
+  const initialTweets = await getAllTweets({ pageParam: 0 });
   return (
     <>
       <PageTitle title="home" />

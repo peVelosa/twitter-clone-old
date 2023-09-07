@@ -1,8 +1,10 @@
 import { TweetType } from "@/types/api";
 import axios from "./axios";
 
-export const getAllTweets = async (): Promise<TweetType[] | []> => {
-  const res = await axios.get<TweetType[] | []>("/tweet");
+export const getAllTweets = async ({
+  pageParam = 0,
+}): Promise<TweetType[] | []> => {
+  const res = await axios.get<TweetType[] | []>(`/tweet?cursor=${pageParam}`);
 
   if (res.status !== 200) {
     throw new Error("Somethin got wrong getting the tweets");
