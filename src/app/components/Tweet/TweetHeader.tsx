@@ -17,14 +17,19 @@ const TweetHeader: FC<TweetHeaderProps> = ({
 }) => {
   return (
     <>
-      <div
-        className="flex gap-4 items-start"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Link href={`/${userName}`}>
+      <div className="flex gap-1 sm:gap-4 items-start">
+        <Link
+          href={`/${userName}`}
+          onClick={(e) => e.stopPropagation()}
+          className="max-w-[8ch] overflow-hidden sm:max-w-fit whitespace-nowrap text-ellipsis"
+        >
           <span className="font-bold hover:underline">{name}</span>
         </Link>
-        <Link href={`/${userName}`}>
+        <Link
+          href={`/${userName}`}
+          onClick={(e) => e.stopPropagation()}
+          className="max-w-[8ch] overflow-hidden sm:max-w-fit whitespace-nowrap text-ellipsis"
+        >
           <span className="text-white/70">@{userName}</span>
         </Link>
         <TweetDelete

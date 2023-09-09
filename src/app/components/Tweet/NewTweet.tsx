@@ -56,18 +56,13 @@ const NewTweet: FC<NewTweetProps> = ({ className, session }) => {
         className={className}
       >
         <div className="flex justify-between items-start mb-4">
-          <Link
-            href={`/${userName}`}
-            className="w-fit block"
-          >
-            <ImageWithFallback
-              src={image}
-              alt="profile image"
-              width={42}
-              height={42}
-              className="rounded-full hover:scale-110 cursor-pointer w-fit"
-            />
-          </Link>
+          <ImageWithFallback
+            src={image}
+            alt="profile image"
+            width={42}
+            height={42}
+            className="rounded-full w-fit"
+          />
         </div>
         <textarea
           ref={tweetRef}

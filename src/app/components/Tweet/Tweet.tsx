@@ -2,10 +2,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ImageWithFallback from "../ImageWithFallback";
 import TweetHeader from "./TweetHeader";
-import type { FC } from "react";
-import type { TweetType } from "@/types/api";
 import LikeButton from "./Actions/LikeButton";
 import CommentButton from "./Actions/CommentButton";
+import type { TweetType } from "@/types/api";
+import type { FC } from "react";
 
 type TweetProps = {
   tweet: TweetType;
@@ -24,7 +24,10 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
           router.push(`/tweet/${tweet.id}`);
         }}
       >
-        <div onClick={(e) => e.stopPropagation()}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="shrink-0"
+        >
           <Link href={`/${tweet.owner.userName}`}>
             <ImageWithFallback
               alt="image profile"
