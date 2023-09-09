@@ -44,6 +44,7 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
             userName={tweet.owner.userName}
             ownerId={tweet.ownerId}
             tweetId={tweet.id}
+            updatedAt={tweet.updatedAt}
           />
           <p className="whitespace-pre">{tweet.body}</p>
           <div

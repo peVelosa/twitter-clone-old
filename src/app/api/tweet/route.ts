@@ -1,3 +1,4 @@
+import { getTime } from "@/libs/helpers";
 import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
 
@@ -25,6 +26,8 @@ export async function GET(req: Request) {
               id: true,
             },
           },
+          updatedAt: true,
+
           ownerId: true,
           _count: {
             select: {
@@ -38,7 +41,12 @@ export async function GET(req: Request) {
         },
         take: MAX_TWEETS_PER_REQUEST,
       });
-      return NextResponse.json(tweets, { status: 200 });
+
+      const resTweet = tweets?.map((tweet) => ({
+        ...tweet,
+        updatedAt: getTime(tweet.updatedAt),
+      }));
+      return NextResponse.json(resTweet, { status: 200 });
     }
 
     const tweets = await prisma.tweet.findMany({
@@ -57,6 +65,7 @@ export async function GET(req: Request) {
             id: true,
           },
         },
+        updatedAt: true,
         ownerId: true,
         _count: {
           select: {
@@ -74,7 +83,11 @@ export async function GET(req: Request) {
       },
       skip: 1,
     });
-    return NextResponse.json(tweets, { status: 200 });
+    const resTweet = tweets?.map((tweet) => ({
+      ...tweet,
+      updatedAt: getTime(tweet.updatedAt),
+    }));
+    return NextResponse.json(resTweet, { status: 200 });
   } catch {
     return NextResponse.json({}, { status: 404 });
   }

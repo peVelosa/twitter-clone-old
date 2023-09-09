@@ -7,6 +7,7 @@ export type TweetType = {
     name: string;
     image: string;
   };
+  updatedAt: string;
   likes: {
     id: string;
   }[];

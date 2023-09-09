@@ -21,6 +21,7 @@ const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
     },
     getNextPageParam: (lastPage, pages) =>
       lastPage[lastPage.length - 1]?.id ?? undefined,
+    refetchInterval: 1000 * 30,
   });
 
   return (
