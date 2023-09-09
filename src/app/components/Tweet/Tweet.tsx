@@ -19,7 +19,7 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
   return (
     <>
       <div
-        className="p-4 flex items-start gap-4 hover:bg-slate-700 cursor-pointer"
+        className="p-4 flex items-start gap-4 hover:bg-slate-700 cursor-pointer border-b border-slate-500"
         onClick={() => {
           router.push(`/tweet/${tweet.id}`);
         }}
