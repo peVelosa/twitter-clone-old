@@ -8,6 +8,7 @@ import HomeTweet from "@/components/Tweet/HomeTweet/HomeTweet";
 import type { FC } from "react";
 import type { Session } from "next-auth";
 import type { CommentType, SingleTweetType } from "@/types/api";
+import NewComment from "@/components/Comment/NewComment";
 
 type ClientTweetPageProps = {
   initialDataTweet: SingleTweetType;
@@ -37,6 +38,10 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
       <HomeTweet
         tweet={tweet}
         userId={session?.user.id}
+      />
+      <NewComment
+        session={session}
+        tweetId={initialDataTweet.id}
       />
       {comments.map((comment) => (
         <Comment

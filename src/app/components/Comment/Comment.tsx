@@ -1,10 +1,10 @@
 import ImageWithFallback from "../ImageWithFallback";
-import type { FC } from "react";
-import type { CommentType } from "@/types/api";
-import { useRouter } from "next/router";
+
 import useCountdown from "app/hook/useCountdown";
 import Link from "next/link";
-import TweetHeader from "../Tweet/TweetHeader";
+import CommentHeader from "./CommentHeader";
+import type { FC } from "react";
+import type { CommentType } from "@/types/api";
 
 type CommentProps = {
   comment: CommentType;
@@ -13,6 +13,16 @@ type CommentProps = {
 const Comment: FC<CommentProps> = ({ comment }) => {
   const isUser = comment.likes.some((user) => "" === user.id);
   const { publishedAt } = useCountdown({ updatedAt: comment.updatedAt });
+
+  const {
+    id: commentId,
+    body,
+    likes,
+    ownerId,
+    owner: { image, name, userName },
+    tweetId,
+  } = comment;
+
   return (
     <>
       <article className="p-4 flex items-start gap-4 hover:bg-slate-700 cursor-pointer border-b border-slate-500">
@@ -20,10 +30,10 @@ const Comment: FC<CommentProps> = ({ comment }) => {
           onClick={(e) => e.stopPropagation()}
           className="shrink-0"
         >
-          <Link href={`/${comment.owner.userName}`}>
+          <Link href={`/${userName}`}>
             <ImageWithFallback
               alt="image profile"
-              src={comment.owner.image}
+              src={image}
               width={40}
               height={40}
               className="rounded-full hover:scale-110"
@@ -31,18 +41,16 @@ const Comment: FC<CommentProps> = ({ comment }) => {
           </Link>
         </div>
         <div className="w-full">
-          <TweetHeader
-            name={comment.owner.name}
-            userName={comment.owner.userName}
-            ownerId={comment.ownerId}
-            tweetId={comment.id}
+          <CommentHeader
+            name={name}
+            userName={userName}
+            ownerId={ownerId}
+            tweetId={tweetId}
+            commentId={commentId}
             publishedAt={publishedAt}
           />
-          <p className="whitespace-pre">{comment.body}</p>
-          <div
-            className="flex items-center gap-4 mt-4"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <p className="whitespace-pre">{body}</p>
+          <div className="flex items-center gap-4 mt-4">
             {/* <LikeButton
             isUser={isUser}
             likes={tweet._count.likes}

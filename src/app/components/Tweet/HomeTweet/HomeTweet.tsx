@@ -23,7 +23,7 @@ const HomeTweet: FC<TweetProps> = ({ tweet, userId }) => {
 
   return (
     <>
-      <article className="p-4">
+      <article className="p-4 pb-2">
         <HomeTweetHeader
           image={image}
           name={name}
@@ -43,7 +43,7 @@ const HomeTweet: FC<TweetProps> = ({ tweet, userId }) => {
             likes={tweet.likes}
           />
         </div>
-        <div className="flex items-center gap-8 mt-4 justify-center border-y border-slate-500 py-2">
+        <div className="flex items-center gap-8 mt-4 justify-center border-y border-slate-500 pt-2">
           <LikeButton
             isUser={isUser}
             tweetId={tweetId}

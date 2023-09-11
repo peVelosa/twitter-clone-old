@@ -1,5 +1,6 @@
 import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
+
 export async function GET(
   req: Request,
   { params: { id } }: { params: { id: string } },
@@ -29,4 +30,27 @@ export async function GET(
     },
   });
   return NextResponse.json(comments, { status: 200 });
+}
+
+export async function POST(
+  req: Request,
+  { params: { id } }: { params: { id: string } },
+) {
+  const { userId, body } = (await req.json()) as {
+    userId: string;
+    body: string;
+  };
+
+  if (!userId) return new Error("Missing user");
+  if (!body) return new Error("Invalid tweet input");
+
+  await prisma.comment.create({
+    data: {
+      body,
+      tweetId: id,
+      ownerId: userId,
+    },
+  });
+
+  return NextResponse.json({}, { status: 201 });
 }

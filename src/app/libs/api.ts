@@ -41,19 +41,47 @@ export const getComments = async ({
  * Unlike
  * Comment
  * Delete
+ * Tweet
+ * Post
  */
 
-type ActionProps = {
+type ActionTweetProps = {
   userId: string;
   tweetId: string;
 };
 
-export const likeTweet = async ({ tweetId, userId }: ActionProps) => {
+export const likeTweet = async ({ tweetId, userId }: ActionTweetProps) => {
   await axios.put(`/tweet/${tweetId}?like=like`, { userId });
 };
-export const unlikeTweet = async ({ tweetId, userId }: ActionProps) => {
+export const unlikeTweet = async ({ tweetId, userId }: ActionTweetProps) => {
   await axios.put(`/tweet/${tweetId}?like=unlike`, { userId });
 };
-export const deleteTweet = async ({ tweetId, userId }: ActionProps) => {
+export const deleteTweet = async ({ tweetId, userId }: ActionTweetProps) => {
   await axios.delete(`/tweet/${tweetId}`, { data: { userId } });
+};
+
+type ActionCommentProps = {
+  userId: string;
+  tweetId: string;
+  commentId?: string;
+};
+
+export const deleteComment = async ({
+  tweetId,
+  userId,
+  commentId,
+}: ActionCommentProps) => {
+  await axios.delete(`/tweet/${tweetId}/comments/${commentId}`, {
+    data: { userId },
+  });
+};
+export const createPost = async ({
+  tweetId,
+  userId,
+  body,
+}: ActionCommentProps & { body: string }) => {
+  await axios.post(`/tweet/${tweetId}/comments`, {
+    body,
+    userId,
+  });
 };
