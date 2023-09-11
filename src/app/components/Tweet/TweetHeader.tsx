@@ -7,7 +7,7 @@ type TweetHeaderProps = {
   name: string;
   ownerId: string;
   tweetId: string;
-  updatedAt: string;
+  publishedAt: string;
 };
 
 const TweetHeader: FC<TweetHeaderProps> = ({
@@ -15,7 +15,7 @@ const TweetHeader: FC<TweetHeaderProps> = ({
   name,
   ownerId,
   tweetId,
-  updatedAt,
+  publishedAt,
 }) => {
   return (
     <>
@@ -39,7 +39,7 @@ const TweetHeader: FC<TweetHeaderProps> = ({
             <div className="flex items-center justify-center gap-2">
               <span className="w-1 h-1 rounded-full bg-slate-500"></span>
               <span className="text-white/70 text-sm sm:text-base">
-                {updatedAt} ago
+                {publishedAt} ago
               </span>
             </div>
           </div>

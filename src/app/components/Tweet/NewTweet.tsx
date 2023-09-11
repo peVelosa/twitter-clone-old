@@ -5,22 +5,25 @@ import axios from "@/libs/axios";
 import { adjustTextAreaHeight, focusInput } from "@/libs/helpers";
 
 import CircularProgress from "@/components/CircularProgress";
-import Link from "next/link";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import type { Session } from "next-auth";
 
 type NewTweetProps = {
   className?: React.ComponentProps<"div">["className"];
   session: Session | null;
+  onClose?: () => void;
 };
 
-const NewTweet: FC<NewTweetProps> = ({ className, session }) => {
+const NewTweet: FC<NewTweetProps> = ({ className, session, onClose }) => {
   const queryClient = useQueryClient();
 
   const { mutate: _post } = useMutation({
     mutationKey: ["tweets"],
     mutationFn: async ({ tweetBody }: { tweetBody: string }) => {
       setTweetInput("");
+      if (onClose) {
+        onClose();
+      }
       await axios.post("/tweet", { body: tweetBody, userId });
     },
     onSettled: () => {
@@ -46,7 +49,7 @@ const NewTweet: FC<NewTweetProps> = ({ className, session }) => {
     return <></>;
   }
   const {
-    user: { userName, image, name, id: userId },
+    user: { image, id: userId },
   } = session;
 
   return (

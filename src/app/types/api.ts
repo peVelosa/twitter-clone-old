@@ -7,7 +7,7 @@ export type TweetType = {
     name: string;
     image: string;
   };
-  updatedAt: string;
+  updatedAt: Date;
   likes: {
     id: string;
   }[];
@@ -15,4 +15,20 @@ export type TweetType = {
     comments: number;
     likes: number;
   };
+};
+
+export type CommentType = {
+  body: string;
+  id: string;
+  updatedAt: Date;
+  ownerId: string;
+  tweetId: string;
+  owner: {
+    image: string;
+    name: string;
+    userName: string;
+  };
+  likes: {
+    id: string;
+  }[];
 };

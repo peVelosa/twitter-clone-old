@@ -1,4 +1,4 @@
-import { TweetType } from "@/types/api";
+import { CommentType, TweetType } from "@/types/api";
 import axios from "./axios";
 
 export const getAllTweets = async ({
@@ -13,12 +13,25 @@ export const getAllTweets = async ({
   return res.data;
 };
 
-export const getSingleTweet = async (id: string): Promise<any> => {
-  const res = await axios.get<any>(`/tweet/${id}`);
+export const getSingleTweet = async ({
+  tweetID,
+}: {
+  tweetID: string;
+}): Promise<TweetType> => {
+  const res = await axios.get<TweetType>(`/tweet/${tweetID}`);
 
   if (res.status !== 200) {
     throw new Error("Somethin got wrong getting the tweets");
   }
+
+  return res.data;
+};
+export const getComments = async ({
+  tweetID,
+}: {
+  tweetID: string;
+}): Promise<CommentType[]> => {
+  const res = await axios.get<CommentType[]>(`/tweet/${tweetID}/comments`);
 
   return res.data;
 };

@@ -6,6 +6,7 @@ import LikeButton from "./Actions/LikeButton";
 import CommentButton from "./Actions/CommentButton";
 import type { TweetType } from "@/types/api";
 import type { FC } from "react";
+import useCountdown from "app/hook/useCountdown";
 
 type TweetProps = {
   tweet: TweetType;
@@ -15,6 +16,7 @@ type TweetProps = {
 const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
   const router = useRouter();
   const isUser = tweet.likes.some((user) => userId === user.id);
+  const { publishedAt } = useCountdown({ updatedAt: tweet.updatedAt });
 
   return (
     <>
@@ -44,7 +46,7 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
             userName={tweet.owner.userName}
             ownerId={tweet.ownerId}
             tweetId={tweet.id}
-            updatedAt={tweet.updatedAt}
+            publishedAt={publishedAt}
           />
           <p className="whitespace-pre">{tweet.body}</p>
           <div

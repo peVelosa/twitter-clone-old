@@ -42,11 +42,7 @@ export async function GET(req: Request) {
         take: MAX_TWEETS_PER_REQUEST,
       });
 
-      const resTweet = tweets?.map((tweet) => ({
-        ...tweet,
-        updatedAt: getTime(tweet.updatedAt),
-      }));
-      return NextResponse.json(resTweet, { status: 200 });
+      return NextResponse.json(tweets, { status: 200 });
     }
 
     const tweets = await prisma.tweet.findMany({
@@ -83,11 +79,8 @@ export async function GET(req: Request) {
       },
       skip: 1,
     });
-    const resTweet = tweets?.map((tweet) => ({
-      ...tweet,
-      updatedAt: getTime(tweet.updatedAt),
-    }));
-    return NextResponse.json(resTweet, { status: 200 });
+
+    return NextResponse.json(tweets, { status: 200 });
   } catch {
     return NextResponse.json({}, { status: 404 });
   }

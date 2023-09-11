@@ -43,7 +43,10 @@ const SidebarNewTweet: FC<SidebarNewTweetProps> = ({ session }) => {
         isOpen={isOpen}
         close={onClose}
       >
-        <NewTweet session={session} />
+        <NewTweet
+          session={session}
+          onClose={onClose}
+        />
       </Modal>
     </>
   );

@@ -1,6 +1,47 @@
 import { NextResponse } from "next/server";
 import prisma from "@/libs/prisma";
 
+export async function GET(
+  req: Request,
+  { params: { id } }: { params: { id: string } },
+) {
+  try {
+    const tweet = await prisma.tweet.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        body: true,
+        owner: {
+          select: {
+            userName: true,
+            name: true,
+            image: true,
+          },
+        },
+        likes: {
+          select: {
+            id: true,
+          },
+        },
+        updatedAt: true,
+        ownerId: true,
+        _count: {
+          select: {
+            comments: true,
+            likes: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(tweet, { status: 200 });
+  } catch {
+    return NextResponse.json({}, { status: 404 });
+  }
+}
+
 export async function DELETE(
   req: Request,
   { params: { id } }: { params: { id: string } },
