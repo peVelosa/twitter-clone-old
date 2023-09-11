@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { FaTrash } from "react-icons/fa";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTweet } from "@/libs/api";
+import { useRouter } from "next/navigation";
 import type { FC } from "react";
 
 type TweetDeleteProps = {
@@ -14,11 +15,13 @@ type TweetDeleteProps = {
 const TweetDelete: FC<TweetDeleteProps> = ({ tweetId, ownerId }) => {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const mutate = useMutation({
     mutationKey: ["tweets"],
     mutationFn: async () => {
       await deleteTweet({ tweetId, userId: ownerId });
+      router.replace("/");
     },
     onSettled: () => {
       queryClient.invalidateQueries(["tweets"]);
