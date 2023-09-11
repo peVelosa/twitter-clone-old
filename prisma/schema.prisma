@@ -57,7 +57,7 @@ model Comment {
   owner   User   @relation(name: "owner_comment", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
 
-  tweet   Tweet  @relation(fields: [tweetId], references: [id])
+  tweet   Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId String
 
   likes User[] @relation(name: "user_comments_like")
