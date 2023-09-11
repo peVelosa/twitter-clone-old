@@ -23,6 +23,9 @@ export async function GET(
         likes: {
           select: {
             id: true,
+            image: true,
+            name: true,
+            userName: true,
           },
         },
         updatedAt: true,

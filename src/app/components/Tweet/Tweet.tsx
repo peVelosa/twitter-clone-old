@@ -20,7 +20,7 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
 
   return (
     <>
-      <div
+      <article
         className="p-4 flex items-start gap-4 hover:bg-slate-700 cursor-pointer border-b border-slate-500"
         onClick={() => {
           router.push(`/tweet/${tweet.id}`);
@@ -58,11 +58,12 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
               likes={tweet._count.likes}
               tweetId={tweet.id}
               userId={userId}
+              mutationKey={["tweets"]}
             />
             <CommentButton comments={tweet._count.comments} />
           </div>
         </div>
-      </div>
+      </article>
     </>
   );
 };

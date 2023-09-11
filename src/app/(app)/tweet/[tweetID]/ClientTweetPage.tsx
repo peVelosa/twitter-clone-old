@@ -2,15 +2,15 @@
 
 import { getComments, getSingleTweet } from "@/libs/api";
 import { useQuery } from "@tanstack/react-query";
-import Tweet from "@/components/Tweet/Tweet";
 import PageTitle from "@/components/PageTitle";
 import Comment from "@/components/Comment/Comment";
+import HomeTweet from "@/components/Tweet/HomeTweet/HomeTweet";
 import type { FC } from "react";
 import type { Session } from "next-auth";
-import type { CommentType, TweetType } from "@/types/api";
+import type { CommentType, SingleTweetType } from "@/types/api";
 
 type ClientTweetPageProps = {
-  initialDataTweet: TweetType;
+  initialDataTweet: SingleTweetType;
   session: Session | null;
   initialDataTweetComments: CommentType[];
 };
@@ -34,7 +34,7 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
   return (
     <>
       <PageTitle title="Tweet" />
-      <Tweet
+      <HomeTweet
         tweet={tweet}
         userId={session?.user.id}
       />

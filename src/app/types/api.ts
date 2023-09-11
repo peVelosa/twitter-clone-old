@@ -1,12 +1,16 @@
+type UserType = {
+  image: string;
+  userName: string;
+  name: string;
+};
+
+type LikesUnion = { id: string } & UserType;
+
 export type TweetType = {
   id: string;
   body: string;
   ownerId: string;
-  owner: {
-    userName: string;
-    name: string;
-    image: string;
-  };
+  owner: UserType;
   updatedAt: Date;
   likes: {
     id: string;
@@ -17,17 +21,17 @@ export type TweetType = {
   };
 };
 
+export type SingleTweetType = Omit<TweetType, "likes"> & {
+  likes: LikesUnion[];
+};
+
 export type CommentType = {
   body: string;
   id: string;
   updatedAt: Date;
   ownerId: string;
   tweetId: string;
-  owner: {
-    image: string;
-    name: string;
-    userName: string;
-  };
+  owner: UserType;
   likes: {
     id: string;
   }[];

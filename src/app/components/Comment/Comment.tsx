@@ -15,7 +15,7 @@ const Comment: FC<CommentProps> = ({ comment }) => {
   const { publishedAt } = useCountdown({ updatedAt: comment.updatedAt });
   return (
     <>
-      <div className="p-4 flex items-start gap-4 hover:bg-slate-700 cursor-pointer border-b border-slate-500">
+      <article className="p-4 flex items-start gap-4 hover:bg-slate-700 cursor-pointer border-b border-slate-500">
         <div
           onClick={(e) => e.stopPropagation()}
           className="shrink-0"
@@ -52,7 +52,7 @@ const Comment: FC<CommentProps> = ({ comment }) => {
           <CommentButton comments={tweet._count.comments} /> */}
           </div>
         </div>
-      </div>
+      </article>
     </>
   );
 };

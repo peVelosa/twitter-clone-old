@@ -7,7 +7,7 @@ type TweetHeaderProps = {
   name: string;
   ownerId: string;
   tweetId: string;
-  publishedAt: string;
+  publishedAt?: string;
 };
 
 const TweetHeader: FC<TweetHeaderProps> = ({
@@ -19,7 +19,7 @@ const TweetHeader: FC<TweetHeaderProps> = ({
 }) => {
   return (
     <>
-      <div className="flex gap-1 sm:gap-4 items-center mb-4">
+      <div className="flex gap-1 sm:gap-4 items-center">
         <div className="flex gap-1 sm:gap-4 items-start flex-col sm:flex-row">
           <Link
             href={`/${userName}`}
@@ -36,12 +36,11 @@ const TweetHeader: FC<TweetHeaderProps> = ({
             >
               <span className="text-white/70">@{userName}</span>
             </Link>
-            <div className="flex items-center justify-center gap-2">
-              <span className="w-1 h-1 rounded-full bg-slate-500"></span>
-              <span className="text-white/70 text-sm sm:text-base">
-                {publishedAt} ago
-              </span>
-            </div>
+            {publishedAt && (
+              <div className="flex items-center justify-center gap-2 text-white/70">
+                ·<span className="text-sm sm:text-base">{publishedAt} ago</span>
+              </div>
+            )}
           </div>
         </div>
         <TweetDelete
