@@ -9,8 +9,7 @@ const PublishedTime = ({ date }: { date: Date }) => {
 
   return (
     <>
-      {String(hour).padStart(2, "0")}:{String(minute).padStart(2, "0")} ·{" "}
-      {month} {day}, {year}
+      {hour}:{minute} · {month} {day}, {year}
     </>
   );
 };

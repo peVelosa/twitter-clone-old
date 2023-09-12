@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { getTime } from "@/libs/helpers";
 
-const useUpdateTime = ({ lastUpdate }: { lastUpdate: Date }) => {
-  const [publishedAt, setPublishedAt] = useState(getTime(lastUpdate));
+const useUpdateTime = ({ updatedAt }: { updatedAt: Date }) => {
+  const [publishedAt, setPublishedAt] = useState(getTime(updatedAt));
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setPublishedAt(getTime(lastUpdate));
+      setPublishedAt(getTime(updatedAt));
     }, 1000);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [publishedAt, lastUpdate]);
+  }, [publishedAt, updatedAt]);
 
   return { publishedAt };
 };
