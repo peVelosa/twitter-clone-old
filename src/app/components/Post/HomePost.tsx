@@ -1,10 +1,10 @@
 import { Post } from ".";
 import { deleteTweet, likeTweet, unlikeTweet } from "@/libs/api";
 import PublishedTime from "../PublishedTime";
-import LikesList from "../Tweet/HomeTweet/LikesList";
 import type { Session } from "next-auth";
 import type { SingleTweetType } from "@/types/api";
 import type { FC } from "react";
+import LikesList from "../Tweet/LikesList";
 
 type HomePostProps = {
   tweet: SingleTweetType;
