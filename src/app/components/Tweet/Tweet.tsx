@@ -16,7 +16,7 @@ type TweetProps = {
 const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
   const router = useRouter();
   const isUser = tweet.likes.some((user) => userId === user.id);
-  const { publishedAt } = useCountdown({ updatedAt: tweet.updatedAt });
+  const { updatedAt } = useCountdown({ publishedAt: tweet.updatedAt });
 
   return (
     <>
@@ -46,7 +46,7 @@ const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
             userName={tweet.owner.userName}
             ownerId={tweet.ownerId}
             tweetId={tweet.id}
-            publishedAt={publishedAt}
+            publishedAt={updatedAt}
           />
           <p className="whitespace-pre">{tweet.body}</p>
           <div

@@ -1,14 +1,20 @@
 "use client";
 
-import { getComments, getSingleTweet } from "@/libs/api";
+import {
+  deleteComment,
+  getComments,
+  getSingleTweet,
+  likeComment,
+  unlikeComment,
+} from "@/libs/api";
 import { useQuery } from "@tanstack/react-query";
 import PageTitle from "@/components/PageTitle";
-import Comment from "@/components/Comment/Comment";
-import HomeTweet from "@/components/Tweet/HomeTweet/HomeTweet";
+import NewComment from "@/components/Comment/NewComment";
+import { Post } from "@/components/Post/Wrapper";
+import HomePost from "@/components/Post/HomePost";
 import type { FC } from "react";
 import type { Session } from "next-auth";
 import type { CommentType, SingleTweetType } from "@/types/api";
-import NewComment from "@/components/Comment/NewComment";
 
 type ClientTweetPageProps = {
   initialDataTweet: SingleTweetType;
@@ -35,19 +41,72 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
   return (
     <>
       <PageTitle title="Tweet" />
-      <HomeTweet
+      <HomePost
+        session={session}
         tweet={tweet}
-        userId={session?.user.id}
       />
       <NewComment
         session={session}
         tweetId={initialDataTweet.id}
       />
+
       {comments.map((comment) => (
-        <Comment
-          comment={comment}
+        <Post.Root
+          href={`/tweet/${comment.id}`}
           key={comment.id}
-        />
+        >
+          <Post.Image
+            userName={comment.owner.userName}
+            image={comment.owner.image}
+          />
+          <div className="w-full">
+            <Post.Header>
+              <Post.Info
+                name={comment.owner.name}
+                userName={comment.owner.userName}
+              >
+                <Post.Published publishedAt={comment.updatedAt} />
+              </Post.Info>
+              <Post.Delete
+                ownerId={comment.ownerId}
+                queryKey={["tweets"]}
+                queryFn={async () =>
+                  deleteComment({
+                    tweetId: tweet.id,
+                    userId: session?.user.id,
+                    commentId: comment.id,
+                  })
+                }
+              />
+            </Post.Header>
+            <p className="whitespace-pre">{comment.body}</p>
+            <Post.Actions>
+              <Post.Like
+                session={session}
+                mutationKey={["tweets"]}
+                onLike={async () =>
+                  likeComment({
+                    tweetId: tweet.id,
+                    userId: session?.user.id,
+                    commentId: comment.id,
+                  })
+                }
+                onUnlike={async () =>
+                  unlikeComment({
+                    tweetId: tweet.id,
+                    userId: session?.user.id,
+                    commentId: comment.id,
+                  })
+                }
+                isUser={comment.likes.some(
+                  (user) => session?.user.id === user.id,
+                )}
+              >
+                {comment.likes.length}
+              </Post.Like>
+            </Post.Actions>
+          </div>
+        </Post.Root>
       ))}
     </>
   );
