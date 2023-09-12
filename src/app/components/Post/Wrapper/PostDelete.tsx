@@ -27,7 +27,6 @@ const PostDelete: FC<PostDeleteProps> = ({
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const router = useRouter();
-  console.log("replaceUrl: ", replaceUrl);
   const mutate = useMutation({
     mutationKey: queryKey,
     mutationFn: async () => {

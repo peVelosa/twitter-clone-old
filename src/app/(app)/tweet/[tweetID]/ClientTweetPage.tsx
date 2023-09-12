@@ -10,7 +10,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import PageTitle from "@/components/PageTitle";
 import NewComment from "@/components/Comment/NewComment";
-import { Post } from "@/components/Post/Wrapper";
+import { Post } from "@/components/Post";
 import HomePost from "@/components/Post/HomePost";
 import type { FC } from "react";
 import type { Session } from "next-auth";

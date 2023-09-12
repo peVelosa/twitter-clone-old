@@ -1,4 +1,4 @@
-import { Post } from "./Wrapper";
+import { Post } from ".";
 import { deleteTweet, likeTweet, unlikeTweet } from "@/libs/api";
 import PublishedTime from "../PublishedTime";
 import LikesList from "../Tweet/HomeTweet/LikesList";
