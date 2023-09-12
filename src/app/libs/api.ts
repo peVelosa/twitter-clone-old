@@ -85,3 +85,21 @@ export const createPost = async ({
     userId,
   });
 };
+export const likeComment = async ({
+  tweetId,
+  userId,
+  commentId,
+}: ActionCommentProps) => {
+  await axios.put(`/tweet/${tweetId}/comments/${commentId}?like=like`, {
+    userId,
+  });
+};
+export const unlikeComment = async ({
+  tweetId,
+  userId,
+  commentId,
+}: ActionCommentProps) => {
+  await axios.put(`/tweet/${tweetId}/comments/${commentId}?like=unlike`, {
+    userId,
+  });
+};

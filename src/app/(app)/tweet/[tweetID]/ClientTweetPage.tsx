@@ -1,14 +1,14 @@
 "use client";
 
-import { getComments, getSingleTweet } from "@/libs/api";
+import { deleteComment, getComments, getSingleTweet } from "@/libs/api";
 import { useQuery } from "@tanstack/react-query";
 import PageTitle from "@/components/PageTitle";
-import Comment from "@/components/Comment/Comment";
 import HomeTweet from "@/components/Tweet/HomeTweet/HomeTweet";
+import NewComment from "@/components/Comment/NewComment";
+import { Post } from "@/components/Post";
 import type { FC } from "react";
 import type { Session } from "next-auth";
 import type { CommentType, SingleTweetType } from "@/types/api";
-import NewComment from "@/components/Comment/NewComment";
 
 type ClientTweetPageProps = {
   initialDataTweet: SingleTweetType;
@@ -44,10 +44,47 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
         tweetId={initialDataTweet.id}
       />
       {comments.map((comment) => (
-        <Comment
-          comment={comment}
+        <Post.Root
+          href={`/comment/${comment.id}`}
           key={comment.id}
-        />
+        >
+          <Post.Image
+            href={comment.owner.userName}
+            image={comment.owner.image}
+          />
+          <Post.Body>
+            <Post.Header.Root>
+              <Post.Header.Links
+                name={comment.owner.name}
+                userName={comment.owner.userName}
+              />
+              <Post.Header.PublishedAt publishedAt={comment.updatedAt} />
+              <Post.Actions.Delete
+                ownerId={comment.ownerId}
+                queryFn={() =>
+                  deleteComment({
+                    tweetId: tweet.id,
+                    userId: session?.user.id,
+                    commentId: comment.id,
+                  })
+                }
+                queryKey={["tweets"]}
+              />
+            </Post.Header.Root>
+            <Post.Content>{comment.body}</Post.Content>
+            <Post.Actions.Root>
+              <Post.Actions.Like
+                mutationKey={["tweets"]}
+                tweetId={tweet.id}
+                userId={session?.user.id}
+                likes={comment.likes}
+                commentId={comment.id}
+              >
+                {comment.likes.length}
+              </Post.Actions.Like>
+            </Post.Actions.Root>
+          </Post.Body>
+        </Post.Root>
       ))}
     </>
   );

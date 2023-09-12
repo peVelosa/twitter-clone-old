@@ -16,7 +16,7 @@ type TweetProps = {
 const Tweet: FC<TweetProps> = ({ tweet, userId }) => {
   const router = useRouter();
   const isUser = tweet.likes.some((user) => userId === user.id);
-  const { publishedAt } = useCountdown({ updatedAt: tweet.updatedAt });
+  const { publishedAt } = useCountdown({ lastUpdate: tweet.updatedAt });
 
   return (
     <>

@@ -16,3 +16,50 @@ export async function DELETE(
 
   return NextResponse.json({}, { status: 201 });
 }
+export async function PUT(
+  req: Request,
+  { params: { id, commentId } }: { params: { id: string; commentId: string } },
+) {
+  const { searchParams } = new URL(req.url);
+  const isLiking = searchParams.get("like") as "like" | "unlike";
+
+  const { userId } = await req.json();
+
+  if (!userId) {
+    return NextResponse.json({}, { status: 200 });
+  }
+
+  if (isLiking === "like") {
+    await prisma.comment.update({
+      where: {
+        id: commentId,
+        tweetId: id,
+      },
+      data: {
+        likes: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({}, { status: 201 });
+  }
+
+  await prisma.comment.update({
+    where: {
+      id: commentId,
+      tweetId: id,
+    },
+    data: {
+      likes: {
+        disconnect: {
+          id: userId,
+        },
+      },
+    },
+  });
+
+  return NextResponse.json({}, { status: 201 });
+}

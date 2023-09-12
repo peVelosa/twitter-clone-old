@@ -1,7 +1,7 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import Tweet from "@/components/Tweet/Tweet";
-import { getAllTweets } from "@/libs/api";
+import { getAllTweets, deleteTweet } from "@/libs/api";
+import { Post } from "@/components/Post";
 import { type FC } from "react";
 import type { TweetType } from "app/types/api";
 import type { Session } from "next-auth";
@@ -28,11 +28,45 @@ const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
     <div>
       {tweets?.pages.map((page) =>
         page.map((tweet) => (
-          <Tweet
+          <Post.Root
+            href={`/tweet/${tweet.id}`}
             key={tweet.id}
-            userId={session?.user.id}
-            tweet={tweet}
-          />
+          >
+            <Post.Image
+              href={tweet.owner.userName}
+              image={tweet.owner.image}
+            />
+            <Post.Body>
+              <Post.Header.Root>
+                <Post.Header.Links
+                  name={tweet.owner.name}
+                  userName={tweet.owner.userName}
+                />
+                <Post.Header.PublishedAt publishedAt={tweet.updatedAt} />
+                <Post.Actions.Delete
+                  ownerId={tweet.ownerId}
+                  queryFn={() =>
+                    deleteTweet({
+                      tweetId: tweet.id,
+                      userId: session?.user.id,
+                    })
+                  }
+                  queryKey={["tweets"]}
+                />
+              </Post.Header.Root>
+              <Post.Content>{tweet.body}</Post.Content>
+              <Post.Actions.Root>
+                <Post.Actions.Like
+                  mutationKey={["tweets"]}
+                  tweetId={tweet.id}
+                  userId={session?.user.id}
+                  likes={tweet.likes}
+                >
+                  {tweet._count.likes}
+                </Post.Actions.Like>
+              </Post.Actions.Root>
+            </Post.Body>
+          </Post.Root>
         )),
       )}
     </div>
