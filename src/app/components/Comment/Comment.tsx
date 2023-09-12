@@ -1,10 +1,11 @@
 import ImageWithFallback from "../ImageWithFallback";
 
-import useCountdown from "app/hook/useCountdown";
+import useCountdown from "app/hook/useUpdateTime";
 import Link from "next/link";
 import CommentHeader from "./CommentHeader";
 import type { FC } from "react";
 import type { CommentType } from "@/types/api";
+import { useRouter } from "next/navigation";
 
 type CommentProps = {
   comment: CommentType;
@@ -13,6 +14,7 @@ type CommentProps = {
 const Comment: FC<CommentProps> = ({ comment }) => {
   const isUser = comment.likes.some((user) => "" === user.id);
   const { publishedAt } = useCountdown({ updatedAt: comment.updatedAt });
+  const router = useRouter();
 
   const {
     id: commentId,
@@ -25,7 +27,12 @@ const Comment: FC<CommentProps> = ({ comment }) => {
 
   return (
     <>
-      <article className="p-4 flex items-start gap-4 hover:bg-slate-700 cursor-pointer border-b border-slate-500">
+      <article
+        className="p-4 flex items-start gap-4 hover:bg-slate-700 cursor-pointer border-b border-slate-500"
+        onClick={() => {
+          router.push(`/comment/${commentId}`);
+        }}
+      >
         <div
           onClick={(e) => e.stopPropagation()}
           className="shrink-0"

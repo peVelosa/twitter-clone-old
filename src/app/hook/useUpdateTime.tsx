@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTime } from "@/libs/helpers";
 
-const useCountdown = ({ updatedAt }: { updatedAt: Date }) => {
+const useUpdateTime = ({ updatedAt }: { updatedAt: Date }) => {
   const [publishedAt, setPublishedAt] = useState(getTime(updatedAt));
 
   useEffect(() => {
@@ -17,4 +17,4 @@ const useCountdown = ({ updatedAt }: { updatedAt: Date }) => {
   return { publishedAt };
 };
 
-export default useCountdown;
+export default useUpdateTime;

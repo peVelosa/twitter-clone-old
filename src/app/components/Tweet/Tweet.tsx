@@ -6,7 +6,7 @@ import LikeButton from "./Actions/LikeButton";
 import CommentButton from "./Actions/CommentButton";
 import type { TweetType } from "@/types/api";
 import type { FC } from "react";
-import useCountdown from "app/hook/useCountdown";
+import useCountdown from "app/hook/useUpdateTime";
 
 type TweetProps = {
   tweet: TweetType;

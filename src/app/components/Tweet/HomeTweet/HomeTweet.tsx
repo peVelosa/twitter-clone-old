@@ -1,11 +1,10 @@
-import Link from "next/link";
 import LikeButton from "../Actions/LikeButton";
 import CommentButton from "../Actions/CommentButton";
-import SpecificTime from "../../SpecificTime";
+import PublishedTime from "../../PublishedTime";
 import HomeTweetHeader from "./HomeTweetHeader";
+import LikesList from "./LikesList";
 import type { FC } from "react";
 import type { SingleTweetType } from "@/types/api";
-import LikesList from "./LikesList";
 
 type TweetProps = {
   tweet: SingleTweetType;
@@ -34,7 +33,7 @@ const HomeTweet: FC<TweetProps> = ({ tweet, userId }) => {
         <p className="whitespace-pre mt-4">{tweet.body}</p>
         <div className="mt-8 sm:mt-12 pb-4">
           <time dateTime={String(new Date(tweet.updatedAt))}>
-            <SpecificTime date={tweet.updatedAt} />
+            <PublishedTime date={tweet.updatedAt} />
           </time>
         </div>
         <div className="border-t border-slate-500 pt-4">
