@@ -1,12 +1,11 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import Tweet from "@/components/Tweet/Tweet";
 import { deleteTweet, getAllTweets, likeTweet, unlikeTweet } from "@/libs/api";
+import PostRoot from "@/components/Post/Wrapper/PostRoot";
+import { Post } from "@/components/Post";
 import { type FC } from "react";
 import type { TweetType } from "app/types/api";
 import type { Session } from "next-auth";
-import PostRoot from "@/components/Post/Wrapper/PostRoot";
-import { Post } from "@/components/Post";
 
 type ClientHomePageProps = {
   initialData: TweetType[] | [];
