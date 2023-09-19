@@ -5,6 +5,7 @@ import type { Session } from "next-auth";
 import type { SingleTweetType } from "@/types/api";
 import type { FC } from "react";
 import LikesList from "../Tweet/LikesList";
+import Link from "next/link";
 
 type HomePostProps = {
   tweet: SingleTweetType;
@@ -15,7 +16,6 @@ const HomePost: FC<HomePostProps> = ({ tweet, session }) => {
   return (
     <>
       <Post.Root
-        href={`/tweet/${tweet.id}`}
         key={tweet.id}
         className="block hover:bg-transparent cursor-default p-4 border-none"
       >
@@ -48,12 +48,16 @@ const HomePost: FC<HomePostProps> = ({ tweet, session }) => {
             <PublishedTime date={tweet.updatedAt} />
           </time>
         </div>
-        <div className="border-t border-slate-500 pt-4">
+        <div
+          className="border-t border-slate-500 pt-4"
+          onClick={(e) => e.stopPropagation()}
+        >
           <LikesList
             tweetId={tweet.id}
             likes={tweet.likes}
           />
         </div>
+
         <Post.Actions className="flex items-center gap-8 mt-4 justify-center border-y border-slate-500 pt-2">
           <Post.Like
             session={session}

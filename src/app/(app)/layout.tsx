@@ -8,7 +8,6 @@ import { Inter } from "next/font/google";
 
 import Providers from "./Providers";
 import Sidebar from "@/components/Sidebar/Sidebar";
-import Modal from "@/components/Modal/Modal";
 import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 

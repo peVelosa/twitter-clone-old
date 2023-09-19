@@ -57,7 +57,8 @@ const Modal = ({ isOpen, close, children }: ModalProps) => {
             </div>
           </div>
         </div>,
-        document.getElementById("modal")!,
+        // document.getElementById("modal")!,
+        document.body,
       )
     : null;
 };

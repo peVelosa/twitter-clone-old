@@ -3,8 +3,8 @@ import { twMerge } from "tailwind-merge";
 import type { FC } from "react";
 
 type PostRootProps = {
-  href: string;
   children: React.ReactNode;
+  href?: string;
   className?: React.ComponentProps<"article">["className"];
 };
 
@@ -19,6 +19,7 @@ const PostRoot: FC<PostRootProps> = ({ href, children, className }) => {
           className,
         )}
         onClick={() => {
+          if (!href) return;
           router.push(href);
         }}
       >
