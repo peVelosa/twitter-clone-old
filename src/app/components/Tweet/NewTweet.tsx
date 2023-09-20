@@ -1,12 +1,17 @@
 "use client";
 import { useRef, useState, type ElementRef, FC } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  InfiniteData,
+} from "@tanstack/react-query";
 import axios from "@/libs/axios";
 import { adjustTextAreaHeight, focusInput } from "@/libs/helpers";
 
 import CircularProgress from "@/components/CircularProgress";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import type { Session } from "next-auth";
+import type { TweetType } from "@/types/api";
 
 type NewTweetProps = {
   className?: React.ComponentProps<"div">["className"];
@@ -25,6 +30,40 @@ const NewTweet: FC<NewTweetProps> = ({ className, session, onClose }) => {
         onClose();
       }
       await axios.post("/tweet", { body: tweetBody, userId });
+    },
+    onMutate: async ({ tweetBody }) => {
+      await queryClient.cancelQueries({ queryKey: ["tweets"] });
+
+      const previousTweets = queryClient.getQueryData(["tweets"]);
+      queryClient.setQueryData<unknown>(
+        ["tweets"],
+        (old: InfiniteData<TweetType[]>) => ({
+          ...old,
+          pages: [
+            [
+              {
+                id: "prov-id-no-interactivity",
+                body: tweetBody,
+                likes: [],
+                owner: {
+                  userName: session?.user.userName,
+                  name: session?.user.name,
+                  image: session?.user.image,
+                },
+                ownerId: session?.user.id,
+                updatedAt: new Date().toISOString(),
+                _count: { comments: 0, likes: 0 },
+              },
+            ],
+            ...old.pages,
+          ],
+        }),
+      );
+
+      return { previousTweets };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(["tweets"], context?.previousTweets);
     },
     onSettled: () => {
       queryClient.invalidateQueries(["tweets"]);

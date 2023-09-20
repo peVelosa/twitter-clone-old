@@ -20,6 +20,7 @@ const PostRoot: FC<PostRootProps> = ({ href, children, className }) => {
         )}
         onClick={() => {
           if (!href) return;
+          if (href.includes("prov-id-no-interactivity")) return;
           router.push(href);
         }}
       >

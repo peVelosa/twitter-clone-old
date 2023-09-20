@@ -1,7 +1,6 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { deleteTweet, getAllTweets, likeTweet, unlikeTweet } from "@/libs/api";
-import PostRoot from "@/components/Post/Wrapper/PostRoot";
 import { Post } from "@/components/Post";
 import { type FC } from "react";
 import type { TweetType } from "app/types/api";
@@ -61,12 +60,20 @@ const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
                 <Post.Like
                   session={session}
                   mutationKey={["tweets"]}
-                  onLike={async () =>
-                    likeTweet({ tweetId: tweet.id, userId: session?.user.id })
-                  }
-                  onUnlike={async () =>
-                    unlikeTweet({ tweetId: tweet.id, userId: session?.user.id })
-                  }
+                  onLike={async () => {
+                    if (tweet.id.includes("prov-id-no-interactivity")) return;
+                    return likeTweet({
+                      tweetId: tweet.id,
+                      userId: session?.user.id,
+                    });
+                  }}
+                  onUnlike={async () => {
+                    if (tweet.id.includes("prov-id-no-interactivity")) return;
+                    return unlikeTweet({
+                      tweetId: tweet.id,
+                      userId: session?.user.id,
+                    });
+                  }}
                   isUser={tweet.likes.some(
                     (user) => session?.user.id === user.id,
                   )}

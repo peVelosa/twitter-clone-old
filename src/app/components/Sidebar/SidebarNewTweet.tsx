@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, type FC } from "react";
+import { type FC } from "react";
 import { FaFeatherAlt } from "react-icons/fa";
-import { useSession } from "next-auth/react";
 import { SidebarItem } from "./SidebarItem";
 import Modal from "@/components/Modal/Modal";
 import NewTweet from "@/components/Tweet/NewTweet";
 import type { Session } from "next-auth";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type SidebarNewTweetProps = {
   session: Session | null;
