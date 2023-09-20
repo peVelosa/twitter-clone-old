@@ -7,16 +7,16 @@ import { SidebarItem } from "./SidebarItem";
 import Modal from "@/components/Modal/Modal";
 import NewTweet from "@/components/Tweet/NewTweet";
 import type { Session } from "next-auth";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 type SidebarNewTweetProps = {
   session: Session | null;
 };
 
 const SidebarNewTweet: FC<SidebarNewTweetProps> = ({ session }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const onOpen = () => setIsOpen(true);
-  const onClose = () => setIsOpen(false);
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const showTweetModal = searchParams.get("showTweetModal");
 
   if (!session || !session.user) {
     return <></>;
@@ -25,9 +25,9 @@ const SidebarNewTweet: FC<SidebarNewTweetProps> = ({ session }) => {
   return (
     <>
       <SidebarItem.Root className="w-full">
-        <SidebarItem.Button
+        <SidebarItem.Link
           className="w-full bg-sky-500 hover:bg-sky-400"
-          onClick={onOpen}
+          href={pathName + "?showTweetModal=y"}
         >
           <SidebarItem.Icon
             icon={FaFeatherAlt}
@@ -37,16 +37,14 @@ const SidebarNewTweet: FC<SidebarNewTweetProps> = ({ session }) => {
             label="Tweet"
             className={"hidden md:block"}
           />
-        </SidebarItem.Button>
+        </SidebarItem.Link>
       </SidebarItem.Root>
       <Modal
-        isOpen={isOpen}
-        close={onClose}
+        isOpen={showTweetModal === "y"}
+        urlParam="showTweetModal"
+        className="min-w-[500px] text-white"
       >
-        <NewTweet
-          session={session}
-          onClose={onClose}
-        />
+        <NewTweet session={session} />
       </Modal>
     </>
   );

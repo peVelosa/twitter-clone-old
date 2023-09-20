@@ -52,7 +52,7 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
 
       {comments.map((comment) => (
         <Post.Root
-          href={`/tweet/${comment.id}`}
+          href={`/comment/${comment.id}`}
           key={comment.id}
         >
           <Post.Image
