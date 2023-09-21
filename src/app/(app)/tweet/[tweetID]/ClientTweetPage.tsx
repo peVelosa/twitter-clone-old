@@ -37,7 +37,6 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
     queryFn: () => getComments({ tweetID: initialDataTweet.id }),
     initialData: initialDataTweetComments,
   });
-
   return (
     <>
       <PageTitle title="Tweet" />

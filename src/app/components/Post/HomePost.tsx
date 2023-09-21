@@ -74,7 +74,8 @@ const HomePost: FC<HomePostProps> = ({ tweet, session }) => {
                 userId: session?.user.id,
               })
             }
-            isUser={tweet.likes.some((user) => session?.user.id === user.id)}
+            likes={tweet.likes}
+            postId={tweet.id}
           />
         </Post.Actions>
       </Post.Root>
