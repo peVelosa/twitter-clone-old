@@ -1,3 +1,4 @@
+"use client";
 import useUpdateTime from "app/hook/useUpdateTime";
 import type { FC } from "react";
 
