@@ -98,11 +98,10 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
                     commentId: comment.id,
                   })
                 }
-                isUser={comment.likes.some(
-                  (user) => session?.user.id === user.id,
-                )}
+                likes={comment.likes}
+                postId={comment.id}
               >
-                {comment.likes.length}
+                {comment.likes.length === 0 ? "" : comment.likes.length}
               </Post.Like>
             </Post.Actions>
           </div>

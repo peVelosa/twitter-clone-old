@@ -61,24 +61,21 @@ const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
                   session={session}
                   mutationKey={["tweets"]}
                   onLike={async () => {
-                    if (tweet.id.includes("prov-id-no-interactivity")) return;
                     return likeTweet({
                       tweetId: tweet.id,
                       userId: session?.user.id,
                     });
                   }}
                   onUnlike={async () => {
-                    if (tweet.id.includes("prov-id-no-interactivity")) return;
                     return unlikeTweet({
                       tweetId: tweet.id,
                       userId: session?.user.id,
                     });
                   }}
-                  isUser={tweet.likes.some(
-                    (user) => session?.user.id === user.id,
-                  )}
+                  likes={tweet.likes}
+                  postId={tweet.id}
                 >
-                  {tweet._count.likes}
+                  {tweet.likes.length === 0 ? "" : tweet.likes.length}
                 </Post.Like>
               </Post.Actions>
             </div>

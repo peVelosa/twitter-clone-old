@@ -1,38 +1,87 @@
 "use client";
-import { FaHeart } from "react-icons/fa";
+import { AiOutlineHeart } from "react-icons/ai";
 import {
   type MutationKey,
   useMutation,
   useQueryClient,
+  InfiniteData,
 } from "@tanstack/react-query";
-import { likeTweet, unlikeTweet } from "@/libs/api";
+
 import type { FC } from "react";
 import type { Session } from "next-auth";
+import { TweetType } from "@/types/api";
 
 type PostLikeProps = {
-  isUser: boolean;
+  likes: { id: string }[];
   onLike: () => Promise<void>;
   onUnlike: () => Promise<void>;
   mutationKey: MutationKey;
+  postId: string;
   session: Session | null;
   children?: React.ReactNode;
 };
 
 const PostLike: FC<PostLikeProps> = ({
-  isUser,
+  likes,
+  postId,
   mutationKey,
   children,
   onUnlike,
   onLike,
   session,
 }) => {
+  const hasUserAlreadyLikedPost = likes.some(
+    (user) => session?.user.id === user.id,
+  );
   const queryClient = useQueryClient();
 
   const mutate = useMutation({
     mutationKey: mutationKey,
-    mutationFn: async () => {
-      if (isUser) return await onUnlike();
-      return await onLike();
+    mutationFn: async () =>
+      hasUserAlreadyLikedPost ? await onUnlike() : await onLike(),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["tweets"] });
+
+      const previousTweets = queryClient.getQueryData(["tweets"]);
+
+      queryClient.setQueryData<unknown>(
+        ["tweets"],
+        (old: InfiniteData<TweetType[]>) => ({
+          ...old,
+          pages: old.pages.map((page) =>
+            page.map((updatedTweet) => {
+              if (updatedTweet.id === postId) {
+                return {
+                  ...updatedTweet,
+                  likes: hasUserAlreadyLikedPost
+                    ? updatedTweet.likes.filter(
+                        ({ id: likeUserId }) => likeUserId !== session?.user.id,
+                      )
+                    : [
+                        ...updatedTweet.likes,
+                        {
+                          id: session?.user.id,
+                        },
+                      ],
+
+                  _count: {
+                    ...updatedTweet._count,
+                    likes: hasUserAlreadyLikedPost
+                      ? updatedTweet._count.likes - 1
+                      : updatedTweet._count.likes + 1,
+                  },
+                };
+              }
+              return { ...updatedTweet };
+            }),
+          ),
+        }),
+      );
+
+      return { previousTweets };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(["tweets"], context?.previousTweets);
     },
     onSettled: () => {
       queryClient.invalidateQueries(mutationKey);
@@ -46,15 +95,15 @@ const PostLike: FC<PostLikeProps> = ({
         onClick={() => mutate.mutate()}
         disabled={!session?.user.id}
       >
-        <FaHeart
-          className={`group-hover:bg-red-200 p-2 rounded-full  ${
-            isUser ? "fill-red-600" : "hover:fill-red-600"
+        <AiOutlineHeart
+          className={`group-hover:bg-rose-100 p-2 rounded-full  ${
+            hasUserAlreadyLikedPost
+              ? "fill-red-600"
+              : "group-hover:fill-red-600"
           }`}
-          size={35}
+          size={40}
         />
-        {children && (
-          <span className="group-hover:text-red-600">{children}</span>
-        )}
+        <span className="group-hover:text-red-600">{children}</span>
       </button>
     </>
   );

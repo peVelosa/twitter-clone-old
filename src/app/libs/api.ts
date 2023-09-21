@@ -51,12 +51,17 @@ type ActionTweetProps = {
 };
 
 export const likeTweet = async ({ tweetId, userId }: ActionTweetProps) => {
+  if (tweetId === "prov-id-no-interactivity") return;
+
   await axios.put(`/tweet/${tweetId}?like=like`, { userId });
 };
 export const unlikeTweet = async ({ tweetId, userId }: ActionTweetProps) => {
+  if (tweetId === "prov-id-no-interactivity") return;
   await axios.put(`/tweet/${tweetId}?like=unlike`, { userId });
 };
 export const deleteTweet = async ({ tweetId, userId }: ActionTweetProps) => {
+  if (tweetId === "prov-id-no-interactivity") return;
+
   await axios.delete(`/tweet/${tweetId}`, { data: { userId } });
 };
 
