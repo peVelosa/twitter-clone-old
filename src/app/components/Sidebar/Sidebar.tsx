@@ -30,15 +30,14 @@ const Sidebar = async () => {
         </SidebarItem.Link>
       </SidebarItem.Root>
 
-      <SidebarItem.Root>
-        <SidebarItem.Link href={"/notifications"}>
-          <SidebarItem.Icon icon={FaBell} />
-          <SidebarItem.Label label="notifications" />
-        </SidebarItem.Link>
-      </SidebarItem.Root>
-
       {session?.user.userName ? (
         <>
+          <SidebarItem.Root>
+            <SidebarItem.Link href={"/notifications"}>
+              <SidebarItem.Icon icon={FaBell} />
+              <SidebarItem.Label label="notifications" />
+            </SidebarItem.Link>
+          </SidebarItem.Root>
           <SidebarItem.Root>
             <SidebarItem.Link href={`/${session.user.userName}`}>
               <SidebarItem.Icon icon={FaUser} />

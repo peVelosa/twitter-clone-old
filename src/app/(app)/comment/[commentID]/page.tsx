@@ -1,6 +1,5 @@
 import type { FC } from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
+import useServerSession from "app/hook/useServerSession";
 
 type ServerCommentPageProps = {
   params: { commentID: string };
@@ -9,7 +8,8 @@ type ServerCommentPageProps = {
 const ServerCommentPage: FC<ServerCommentPageProps> = async ({
   params: { commentID },
 }) => {
-  const session = await getServerSession(authOptions);
+  const session = await useServerSession();
+
   return <div>{commentID}</div>;
 };
 

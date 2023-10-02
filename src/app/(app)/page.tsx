@@ -1,12 +1,11 @@
 import NewTweet from "@/components/Tweet/NewTweet";
 import PageTitle from "@/components/PageTitle";
-import { getServerSession } from "next-auth";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { getAllTweets } from "@/libs/api";
 import ClientHomePage from "./ClientHomePage";
+import useServerSession from "app/hook/useServerSession";
 
 const ServerHomePage = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await useServerSession();
 
   const initialTweets = await getAllTweets({ pageParam: 0 });
   return (

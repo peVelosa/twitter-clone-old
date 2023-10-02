@@ -1,8 +1,8 @@
 import { getComments, getSingleTweet } from "@/libs/api";
 import ClientTweetPage from "./ClientTweetPage";
 import type { FC } from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
+
+import useServerSession from "app/hook/useServerSession";
 
 type ServerTweetPageProps = {
   params: { tweetID: string };
@@ -13,7 +13,7 @@ const ServerTweetPage: FC<ServerTweetPageProps> = async ({
 }) => {
   const tweet = await getSingleTweet({ tweetID });
   const comments = await getComments({ tweetID });
-  const session = await getServerSession(authOptions);
+  const session = await useServerSession();
   return (
     <div>
       <ClientTweetPage

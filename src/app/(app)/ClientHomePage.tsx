@@ -1,13 +1,14 @@
 "use client";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteTweet, getAllTweets, likeTweet, unlikeTweet } from "@/libs/api";
 import { Post } from "@/components/Post";
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { type FC } from "react";
 import type { TweetType } from "app/types/api";
 import type { Session } from "next-auth";
+import { OptimisticUpdatesDeleteTweet } from "app/helpers/optmisticUpdate/deleteTweet";
 
 type ClientHomePageProps = {
   initialData: TweetType[] | [];
@@ -16,11 +17,11 @@ type ClientHomePageProps = {
 
 const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
   const { ref, inView } = useInView();
+  const queryClient = useQueryClient();
 
   const {
     data: tweets,
     fetchNextPage,
-    hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery<typeof initialData>({
     queryKey: ["tweets"],
@@ -68,6 +69,13 @@ const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
                       deleteTweet({
                         tweetId: tweet.id,
                         userId: session?.user.id,
+                      })
+                    }
+                    optmisticUpdate={() =>
+                      OptimisticUpdatesDeleteTweet({
+                        queryClient,
+                        queryKey: ["tweets"],
+                        id: tweet.id,
                       })
                     }
                   />

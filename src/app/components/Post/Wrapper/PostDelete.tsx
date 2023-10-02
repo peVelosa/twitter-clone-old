@@ -16,6 +16,7 @@ type PostDeleteProps = {
   queryKey: MutationKey;
   queryFn: () => Promise<void>;
   replaceUrl?: string;
+  optmisticUpdate?: () => any;
 };
 
 const PostDelete: FC<PostDeleteProps> = ({
@@ -23,6 +24,7 @@ const PostDelete: FC<PostDeleteProps> = ({
   replaceUrl,
   queryFn,
   queryKey,
+  optmisticUpdate,
 }) => {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -30,8 +32,15 @@ const PostDelete: FC<PostDeleteProps> = ({
   const mutate = useMutation({
     mutationKey: queryKey,
     mutationFn: async () => {
-      await queryFn();
       if (replaceUrl) router.replace(replaceUrl);
+      await queryFn();
+    },
+    onMutate: async () => {
+      if (!optmisticUpdate) return;
+      return optmisticUpdate();
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(queryKey, context?.previousTweets);
     },
     onSettled: () => {
       queryClient.invalidateQueries(queryKey);

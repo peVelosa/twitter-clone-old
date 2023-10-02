@@ -1,11 +1,13 @@
+"use client";
 import { Post } from ".";
 import { deleteTweet, likeTweet, unlikeTweet } from "@/libs/api";
 import PublishedTime from "../PublishedTime";
+import LikesList from "../Tweet/LikesList";
+import { OptimisticUpdatesDeleteTweet } from "app/helpers/optmisticUpdate/deleteTweet";
 import type { Session } from "next-auth";
 import type { SingleTweetType } from "@/types/api";
 import type { FC } from "react";
-import LikesList from "../Tweet/LikesList";
-import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 
 type HomePostProps = {
   tweet: SingleTweetType;
@@ -13,6 +15,8 @@ type HomePostProps = {
 };
 
 const HomePost: FC<HomePostProps> = ({ tweet, session }) => {
+  const queryClient = useQueryClient();
+
   return (
     <>
       <Post.Root
@@ -36,6 +40,13 @@ const HomePost: FC<HomePostProps> = ({ tweet, session }) => {
                 deleteTweet({
                   tweetId: tweet.id,
                   userId: session?.user.id,
+                })
+              }
+              optmisticUpdate={() =>
+                OptimisticUpdatesDeleteTweet({
+                  queryClient,
+                  queryKey: ["tweets"],
+                  id: tweet.id,
                 })
               }
               replaceUrl={"/"}

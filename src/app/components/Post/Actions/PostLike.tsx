@@ -96,14 +96,16 @@ const PostLike: FC<PostLikeProps> = ({
         disabled={!session?.user.id}
       >
         <AiOutlineHeart
-          className={`group-hover:bg-rose-100 p-2 rounded-full  ${
+          className={`group-hover:bg-rose-100 p-2 rounded-full group-disabled:fill-current group-disabled:bg-transparent ${
             hasUserAlreadyLikedPost
               ? "fill-red-600"
               : "group-hover:fill-red-600"
           }`}
           size={40}
         />
-        <span className="group-hover:text-red-600">{children}</span>
+        <span className="group-hover:text-red-600 group-disabled:text-inherit">
+          {children}
+        </span>
       </button>
     </>
   );
