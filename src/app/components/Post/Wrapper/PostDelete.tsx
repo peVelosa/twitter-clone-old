@@ -7,23 +7,22 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { deleteTweet } from "@/libs/api";
 import { useRouter } from "next/navigation";
 import type { FC } from "react";
 
 type PostDeleteProps = {
   ownerId: string;
   queryKey: MutationKey;
-  queryFn: () => Promise<void>;
   replaceUrl?: string;
+  queryFn: () => Promise<void>;
   optmisticUpdate?: () => any;
 };
 
 const PostDelete: FC<PostDeleteProps> = ({
   ownerId,
   replaceUrl,
-  queryFn,
   queryKey,
+  queryFn,
   optmisticUpdate,
 }) => {
   const { data: session } = useSession();
