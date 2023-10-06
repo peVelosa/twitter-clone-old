@@ -7,72 +7,69 @@ import {
   InfiniteData,
 } from "@tanstack/react-query";
 
+import { likeComment, unlikeComment } from "@/libs/api";
 import type { FC } from "react";
-import type { Session } from "next-auth";
-import { TweetType } from "@/types/api";
+import type { CommentType } from "@/types/api";
 
-type PostLikeProps = {
+type LikeProps = {
   likes: { id: string }[];
-  onLike: () => Promise<void>;
-  onUnlike: () => Promise<void>;
   mutationKey: MutationKey;
-  postId: string;
-  session: Session | null;
-  children?: React.ReactNode;
+  userId: string;
+  tweetId: string;
+  commentId: string;
 };
 
-const PostLike: FC<PostLikeProps> = ({
+const Like: FC<LikeProps> = ({
   likes,
-  postId,
   mutationKey,
-  children,
-  onUnlike,
-  onLike,
-  session,
+  userId,
+  tweetId,
+  commentId,
 }) => {
-  const hasUserAlreadyLikedPost = likes.some(
-    (user) => session?.user.id === user.id,
-  );
+  const hasUserAlreadyLikedPost = likes.some((user) => userId === user.id);
   const queryClient = useQueryClient();
 
   const mutate = useMutation({
     mutationKey: mutationKey,
     mutationFn: async () =>
-      hasUserAlreadyLikedPost ? await onUnlike() : await onLike(),
+      hasUserAlreadyLikedPost
+        ? await unlikeComment({
+            commentId,
+            tweetId,
+            userId,
+          })
+        : await likeComment({
+            commentId,
+            tweetId,
+            userId,
+          }),
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["tweets"] });
+      await queryClient.cancelQueries({ queryKey: mutationKey });
 
-      const previousTweets = queryClient.getQueryData(["tweets"]);
+      const previousTweets = queryClient.getQueryData(mutationKey);
 
       queryClient.setQueryData<unknown>(
-        ["tweets"],
-        (old: InfiniteData<TweetType[]>) => ({
+        mutationKey,
+        (old: InfiniteData<CommentType[]>) => ({
           ...old,
           pages: old.pages.map((page) =>
-            page.map((updatedTweet) => {
-              if (updatedTweet.id === postId) {
+            page.map((updatedComment) => {
+              if (updatedComment.id === commentId) {
                 return {
-                  ...updatedTweet,
+                  ...updatedComment,
                   likes: hasUserAlreadyLikedPost
-                    ? updatedTweet.likes.filter(
-                        ({ id: likeUserId }) => likeUserId !== session?.user.id,
+                    ? updatedComment.likes.filter(
+                        ({ id: likeUserId }) => likeUserId !== userId,
                       )
                     : [
-                        ...updatedTweet.likes,
+                        ...updatedComment.likes,
                         {
-                          id: session?.user.id,
+                          id: userId,
                         },
                       ],
-
-                  _count: {
-                    ...updatedTweet._count,
-                    likes: hasUserAlreadyLikedPost
-                      ? updatedTweet._count.likes - 1
-                      : updatedTweet._count.likes + 1,
-                  },
                 };
               }
-              return { ...updatedTweet };
+              return { ...updatedComment };
             }),
           ),
         }),
@@ -81,7 +78,7 @@ const PostLike: FC<PostLikeProps> = ({
       return { previousTweets };
     },
     onError: (err, newTodo, context) => {
-      queryClient.setQueryData(["tweets"], context?.previousTweets);
+      queryClient.setQueryData(mutationKey, context?.previousTweets);
     },
     onSettled: () => {
       queryClient.invalidateQueries(mutationKey);
@@ -93,7 +90,7 @@ const PostLike: FC<PostLikeProps> = ({
       <button
         className="inline-flex items-center gap-2 group"
         onClick={() => mutate.mutate()}
-        disabled={!session?.user.id}
+        disabled={!userId}
       >
         <AiOutlineHeart
           className={`group-hover:bg-rose-100 p-2 rounded-full group-disabled:fill-current group-disabled:bg-transparent ${
@@ -104,11 +101,11 @@ const PostLike: FC<PostLikeProps> = ({
           size={40}
         />
         <span className="group-hover:text-red-600 group-disabled:text-inherit">
-          {children}
+          {likes.length === 0 ? "" : likes.length}
         </span>
       </button>
     </>
   );
 };
 
-export default PostLike;
+export default Like;

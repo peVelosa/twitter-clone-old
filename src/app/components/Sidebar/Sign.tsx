@@ -1,7 +1,7 @@
 "use client";
 import { signOut, signIn } from "next-auth/react";
 import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
-import { SidebarItem } from "./Sidebar/SidebarItem";
+import { SidebarItem } from "./SidebarItem";
 import type { FC } from "react";
 import type { IconType } from "react-icons";
 

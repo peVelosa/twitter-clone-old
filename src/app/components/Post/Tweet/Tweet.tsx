@@ -1,12 +1,23 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import ImageWithFallback from "../ImageWithFallback";
-import type { FC } from "react";
 import { TweetType } from "@/types/api";
-import PostPublished from "../Post/Wrapper/PostPublished";
+
+import Delete from "./Actions/Delete";
+import TweetHeader from "../PostHeader";
+import Like from "./Actions/Like";
+import type { FC } from "react";
+import type { MutationKey } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
+import ImageWithFallback from "@/components/ImageWithFallback";
+
+const NoSRRPublishedAt = dynamic(() => import("../PublishedAt"), {
+  ssr: false,
+});
 
 type TweetProps = {
   data: TweetType;
+  queryKey: MutationKey;
+  userId: string;
 };
 
 const Tweet: FC<TweetProps> = ({
@@ -19,11 +30,12 @@ const Tweet: FC<TweetProps> = ({
     _count: { likes: _likes, comments: _comments },
     owner: { image, name, userName },
   },
+  queryKey,
+  userId,
 }) => {
   const router = useRouter();
-  const tweetHref = `tweet/${id}`;
+  const tweetHref = `/tweet/${id}`;
   const userHref = `/${userName}`;
-
   return (
     <>
       <article
@@ -53,24 +65,17 @@ const Tweet: FC<TweetProps> = ({
         <div className="w-full">
           <div className="flex gap-1 sm:gap-2 items-center">
             <div className="flex gap-1 sm:gap-4 items-start flex-col sm:flex-row">
-              <Link
-                href={userHref}
-                onClick={(e) => e.stopPropagation()}
-                className="max-w-[12ch] overflow-hidden sm:max-w-fit whitespace-nowrap text-ellipsis text-sm sm:text-base"
-              >
-                <span className="font-bold hover:underline">{name}</span>
-              </Link>
-              <div className="flex items-start justify-center sm:gap-2 flex-col sm:flex-row">
-                <Link
-                  href={userHref}
-                  onClick={(e) => e.stopPropagation()}
-                  className="max-w-[12ch] overflow-hidden sm:max-w-fit whitespace-nowrap text-ellipsis text-sm sm:text-base"
-                >
-                  <span className="text-white/70">@{userName}</span>
-                </Link>
-              </div>
-              <PostPublished publishedAt={updatedAt} />
-              DELETE
+              <TweetHeader
+                name={name}
+                userHref={userHref}
+                userName={userName}
+              />
+              <NoSRRPublishedAt publishedAt={updatedAt} />
+              <Delete
+                ownerId={ownerId}
+                tweetId={id}
+                queryKey={queryKey}
+              />
             </div>
           </div>
           <p className="whitespace-pre">{body}</p>
@@ -78,7 +83,12 @@ const Tweet: FC<TweetProps> = ({
             className={"flex items-center gap-4 mt-4"}
             onClick={(e) => e.stopPropagation()}
           >
-            <p>LIKE</p>
+            <Like
+              tweetId={id}
+              userId={userId}
+              likes={likes}
+              mutationKey={queryKey}
+            />
             <p>COMMENT</p>
           </div>
         </div>

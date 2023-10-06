@@ -15,10 +15,12 @@ export const getAllTweets = async ({
 
 export const getSingleTweet = async ({
   tweetID,
+  signal,
 }: {
   tweetID: string;
+  signal: AbortSignal | undefined;
 }): Promise<SingleTweetType> => {
-  const res = await axios.get<SingleTweetType>(`/tweet/${tweetID}`);
+  const res = await axios.get<SingleTweetType>(`/tweet/${tweetID}`, { signal });
 
   if (res.status !== 200) {
     throw new Error("Somethin got wrong getting the tweets");
@@ -28,10 +30,14 @@ export const getSingleTweet = async ({
 };
 export const getComments = async ({
   tweetID,
+  signal,
 }: {
   tweetID: string;
+  signal: AbortSignal | undefined;
 }): Promise<CommentType[]> => {
-  const res = await axios.get<CommentType[]>(`/tweet/${tweetID}/comments`);
+  const res = await axios.get<CommentType[]>(`/tweet/${tweetID}/comments`, {
+    signal,
+  });
 
   return res.data;
 };

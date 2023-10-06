@@ -4,11 +4,10 @@ import { getAllTweets } from "@/libs/api";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
-import Tweet from "@/components/Tweet/Tweet";
-
 import { type FC } from "react";
 import type { TweetType } from "app/types/api";
 import type { Session } from "next-auth";
+import Tweet from "@/components/Post/Tweet/Tweet";
 
 type ClientHomePageProps = {
   initialData: TweetType[] | [];
@@ -17,13 +16,13 @@ type ClientHomePageProps = {
 
 const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
   const { ref, inView } = useInView();
-
+  const queryKey = ["tweets"];
   const {
     data: tweets,
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery<typeof initialData>({
-    queryKey: ["tweets"],
+    queryKey: queryKey,
     queryFn: getAllTweets,
     initialData: {
       pageParams: [undefined],
@@ -31,7 +30,6 @@ const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
     },
     getNextPageParam: (lastPage, pages) =>
       lastPage[lastPage.length - 1]?.id ?? undefined,
-    refetchInterval: 1000 * 30,
   });
 
   useEffect(() => {
@@ -45,68 +43,11 @@ const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
       <div>
         {tweets?.pages.map((page) =>
           page.map((tweet) => (
-            // <Post.Root
-            //   href={`/tweet/${tweet.id}`}
-            //   key={tweet.id}
-            // >
-            //   <Post.Image
-            //     userName={tweet.owner.userName}
-            //     image={tweet.owner.image}
-            //   />
-            //   <div className="w-full">
-            //     <Post.Header>
-            //       <Post.Info
-            //         name={tweet.owner.name}
-            //         userName={tweet.owner.userName}
-            //       >
-            //         <Post.Published publishedAt={tweet.updatedAt} />
-            //       </Post.Info>
-            //       <Post.Delete
-            //         ownerId={tweet.ownerId}
-            //         queryKey={["tweets"]}
-            //         queryFn={async () =>
-            //           deleteTweet({
-            //             tweetId: tweet.id,
-            //             userId: session?.user.id,
-            //           })
-            //         }
-            //         optmisticUpdate={() =>
-            //           OptimisticUpdatesDeleteTweet({
-            //             queryClient,
-            //             queryKey: ["tweets"],
-            //             id: tweet.id,
-            //           })
-            //         }
-            //       />
-            //     </Post.Header>
-            //     <p className="whitespace-pre">{tweet.body}</p>
-            //     <Post.Actions>
-            //       <Post.Like
-            //         session={session}
-            //         mutationKey={["tweets"]}
-            //         onLike={async () => {
-            //           return likeTweet({
-            //             tweetId: tweet.id,
-            //             userId: session?.user.id,
-            //           });
-            //         }}
-            //         onUnlike={async () => {
-            //           return unlikeTweet({
-            //             tweetId: tweet.id,
-            //             userId: session?.user.id,
-            //           });
-            //         }}
-            //         likes={tweet.likes}
-            //         postId={tweet.id}
-            //       >
-            //         {tweet.likes.length === 0 ? "" : tweet.likes.length}
-            //       </Post.Like>
-            //     </Post.Actions>
-            //   </div>
-            // </Post.Root>
             <Tweet
               key={tweet.id}
               data={tweet}
+              queryKey={queryKey}
+              userId={session?.user.id}
             />
           )),
         )}

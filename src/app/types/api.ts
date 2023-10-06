@@ -4,7 +4,7 @@ type UserType = {
   name: string;
 };
 
-type LikesUnion = { id: string } & UserType;
+export type LikesUnion = { id: string } & UserType;
 
 export type TweetType = {
   id: string;

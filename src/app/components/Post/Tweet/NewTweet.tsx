@@ -8,7 +8,7 @@ import {
 import axios from "@/libs/axios";
 import { adjustTextAreaHeight, focusInput } from "@/libs/helpers";
 
-import CircularProgress from "@/components/CircularProgress";
+import CircularProgress from "@/components/Post/CircularProgress";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import type { Session } from "next-auth";
 import type { TweetType } from "@/types/api";

@@ -4,7 +4,7 @@ import { FaUser, FaBell, FaHome, FaTwitter } from "react-icons/fa";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { SidebarItem } from "./SidebarItem/index";
 import SidebarNewTweet from "./SidebarNewTweet";
-import Sign from "@/components/Sign";
+import Sign from "@/components/Sidebar/Sign";
 
 const Sidebar = async () => {
   const session = await getServerSession(authOptions);

@@ -3,27 +3,30 @@
 import { useSession } from "next-auth/react";
 import { FaTrash } from "react-icons/fa";
 import {
+  InfiniteData,
   MutationKey,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { deleteComment } from "@/libs/api";
 import type { FC } from "react";
+import type { CommentType } from "@/types/api";
 
-type PostDeleteProps = {
-  ownerId: string;
+type DeleteProps = {
+  userId: string;
   queryKey: MutationKey;
+  tweetId: string;
+  commentId: string;
   replaceUrl?: string;
-  queryFn: () => Promise<void>;
-  optmisticUpdate?: () => any;
 };
 
-const PostDelete: FC<PostDeleteProps> = ({
-  ownerId,
+const Delete: FC<DeleteProps> = ({
+  userId,
   replaceUrl,
   queryKey,
-  queryFn,
-  optmisticUpdate,
+  tweetId,
+  commentId,
 }) => {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -32,11 +35,22 @@ const PostDelete: FC<PostDeleteProps> = ({
     mutationKey: queryKey,
     mutationFn: async () => {
       if (replaceUrl) router.replace(replaceUrl);
-      await queryFn();
+      await deleteComment({ tweetId, commentId, userId });
     },
     onMutate: async () => {
-      if (!optmisticUpdate) return;
-      return optmisticUpdate();
+      await queryClient.cancelQueries({ queryKey: queryKey });
+
+      const previousTweets = queryClient.getQueryData(queryKey);
+      queryClient.setQueryData<unknown>(
+        queryKey,
+        (old: InfiniteData<CommentType[]>) => ({
+          ...old,
+          pages: old.pages.map((page) =>
+            page.filter((comment) => comment.id !== commentId),
+          ),
+        }),
+      );
+      return { previousTweets };
     },
     onError: (err, newTodo, context) => {
       queryClient.setQueryData(queryKey, context?.previousTweets);
@@ -46,7 +60,7 @@ const PostDelete: FC<PostDeleteProps> = ({
     },
   });
 
-  return session?.user.id === ownerId ? (
+  return session?.user.id === userId ? (
     <>
       <button
         className="p-2 hover:bg-red-300 rounded-full ml-auto block"
@@ -62,4 +76,4 @@ const PostDelete: FC<PostDeleteProps> = ({
   ) : null;
 };
 
-export default PostDelete;
+export default Delete;

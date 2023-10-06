@@ -1,20 +1,14 @@
 "use client";
 
-import {
-  deleteComment,
-  getComments,
-  getSingleTweet,
-  likeComment,
-  unlikeComment,
-} from "@/libs/api";
-import { useQuery } from "@tanstack/react-query";
+import { getComments, getSingleTweet } from "@/libs/api";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import PageTitle from "@/components/PageTitle";
-import NewComment from "@/components/Comment/NewComment";
-import { Post } from "@/components/Post";
-import HomePost from "@/components/Post/HomePost";
+import HomeTweet from "@/components/Post/Tweet/HomeTweet";
 import type { FC } from "react";
 import type { Session } from "next-auth";
 import type { CommentType, SingleTweetType } from "@/types/api";
+import Comment from "@/components/Post/Comment/Comment";
+import NewComment from "@/components/Post/Comment/NewComment";
 
 type ClientTweetPageProps = {
   initialDataTweet: SingleTweetType;
@@ -29,83 +23,48 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
 }) => {
   const { data: tweet } = useQuery({
     queryKey: ["tweets", initialDataTweet.id],
-    queryFn: () => getSingleTweet({ tweetID: initialDataTweet.id }),
+    queryFn: ({ signal }) =>
+      getSingleTweet({ tweetID: initialDataTweet.id, signal }),
     initialData: initialDataTweet,
   });
-  const { data: comments } = useQuery({
-    queryKey: ["tweets", tweet.id, "comments"],
-    queryFn: () => getComments({ tweetID: initialDataTweet.id }),
-    initialData: initialDataTweetComments,
+
+  const commnentQueryKey = ["tweets", tweet.id, "comments"];
+
+  const { data: comments } = useInfiniteQuery({
+    queryKey: commnentQueryKey,
+    queryFn: ({ signal }) =>
+      getComments({ tweetID: initialDataTweet.id, signal }),
+    initialData: {
+      pageParams: [undefined],
+      pages: [initialDataTweetComments],
+    },
+    getNextPageParam: (lastPage, pages) =>
+      lastPage[lastPage.length - 1]?.id ?? undefined,
+    refetchInterval: 1000 * 30,
   });
+
   return (
     <>
       <PageTitle title="Tweet" />
-      <HomePost
-        session={session}
-        tweet={tweet}
+      <HomeTweet
+        data={tweet}
+        queryKey={["tweets", initialDataTweet.id]}
       />
       <NewComment
         session={session}
         tweetId={initialDataTweet.id}
       />
 
-      {comments.map((comment) => (
-        <Post.Root
-          href={`/comment/${comment.id}`}
-          key={comment.id}
-        >
-          <Post.Image
-            userName={comment.owner.userName}
-            image={comment.owner.image}
+      {comments?.pages.map((page) =>
+        page.map((comment) => (
+          <Comment
+            key={comment.id}
+            data={comment}
+            queryKey={commnentQueryKey}
+            userId={session?.user.id}
           />
-          <div className="w-full">
-            <Post.Header>
-              <Post.Info
-                name={comment.owner.name}
-                userName={comment.owner.userName}
-              >
-                <Post.Published publishedAt={comment.updatedAt} />
-              </Post.Info>
-              <Post.Delete
-                ownerId={comment.ownerId}
-                queryKey={["tweets"]}
-                queryFn={async () =>
-                  deleteComment({
-                    tweetId: tweet.id,
-                    userId: session?.user.id,
-                    commentId: comment.id,
-                  })
-                }
-              />
-            </Post.Header>
-            <p className="whitespace-pre">{comment.body}</p>
-            <Post.Actions>
-              <Post.Like
-                session={session}
-                mutationKey={["tweets"]}
-                onLike={async () =>
-                  likeComment({
-                    tweetId: tweet.id,
-                    userId: session?.user.id,
-                    commentId: comment.id,
-                  })
-                }
-                onUnlike={async () =>
-                  unlikeComment({
-                    tweetId: tweet.id,
-                    userId: session?.user.id,
-                    commentId: comment.id,
-                  })
-                }
-                likes={comment.likes}
-                postId={comment.id}
-              >
-                {comment.likes.length === 0 ? "" : comment.likes.length}
-              </Post.Like>
-            </Post.Actions>
-          </div>
-        </Post.Root>
-      ))}
+        )),
+      )}
     </>
   );
 };

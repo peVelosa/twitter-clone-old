@@ -3,7 +3,7 @@ import { useRef, useState, type ElementRef, FC } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { adjustTextAreaHeight, focusInput } from "@/libs/helpers";
 
-import CircularProgress from "@/components/CircularProgress";
+import CircularProgress from "@/components/Post/CircularProgress";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import type { Session } from "next-auth";
 import Link from "next/link";

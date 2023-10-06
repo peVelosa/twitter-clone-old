@@ -4,9 +4,9 @@ import { type FC } from "react";
 import { FaFeatherAlt } from "react-icons/fa";
 import { SidebarItem } from "./SidebarItem";
 import Modal from "@/components/Modal/Modal";
-import NewTweet from "@/components/Tweet/NewTweet";
 import type { Session } from "next-auth";
 import { usePathname, useSearchParams } from "next/navigation";
+import NewTweet from "@/components/Post/Tweet/NewTweet";
 
 type SidebarNewTweetProps = {
   session: Session | null;

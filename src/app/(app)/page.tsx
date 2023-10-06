@@ -1,8 +1,8 @@
-import NewTweet from "@/components/Tweet/NewTweet";
 import PageTitle from "@/components/PageTitle";
 import { getAllTweets } from "@/libs/api";
 import ClientHomePage from "./ClientHomePage";
 import useServerSession from "app/hook/useServerSession";
+import NewTweet from "@/components/Post/Tweet/NewTweet";
 
 const ServerHomePage = async () => {
   const session = await useServerSession();
