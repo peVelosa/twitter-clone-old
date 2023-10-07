@@ -36,7 +36,7 @@ const HomeTweet: FC<HomeTweetProps> = ({
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex items-start gap-4"
+          className="flex items-start gap-4 mb-4"
         >
           <Link href={userHref}>
             <ImageWithFallback
@@ -56,7 +56,6 @@ const HomeTweet: FC<HomeTweetProps> = ({
             ownerId={ownerId}
             tweetId={id}
             queryKey={queryKey}
-            replaceUrl="/"
           />
         </div>
         <p className="whitespace-pre">{body}</p>
@@ -76,7 +75,7 @@ const HomeTweet: FC<HomeTweetProps> = ({
         </div>
         <div
           className={
-            "flex items-center gap-8 mt-4 justify-center border-y border-slate-500 pt-2"
+            "flex items-center gap-8 mt-4 justify-center border-y border-slate-500 py-2"
           }
           onClick={(e) => e.stopPropagation()}
         >

@@ -11,8 +11,8 @@ import { createPost } from "@/libs/api";
 
 type NewCommentProps = {
   session: Session | null;
+  tweetId: string | undefined;
   onClose?: () => void;
-  tweetId: string;
 };
 
 const NewComment: FC<NewCommentProps> = ({ tweetId, session, onClose }) => {
@@ -25,7 +25,11 @@ const NewComment: FC<NewCommentProps> = ({ tweetId, session, onClose }) => {
       if (onClose) {
         onClose();
       }
-      await createPost({ body: postBody, tweetId, userId });
+      await createPost({
+        body: postBody,
+        tweetId,
+        userId,
+      });
     },
     onSettled: () => {
       queryClient.invalidateQueries(["tweets"]);

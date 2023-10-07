@@ -17,11 +17,12 @@ export const getSingleTweet = async ({
   tweetID,
   signal,
 }: {
-  tweetID: string;
-  signal: AbortSignal | undefined;
-}): Promise<SingleTweetType> => {
-  const res = await axios.get<SingleTweetType>(`/tweet/${tweetID}`, { signal });
+  tweetID: string | undefined;
+  signal?: AbortSignal;
+}): Promise<SingleTweetType | undefined> => {
+  if (!tweetID) return;
 
+  const res = await axios.get<SingleTweetType>(`/tweet/${tweetID}`, { signal });
   if (res.status !== 200) {
     throw new Error("Somethin got wrong getting the tweets");
   }
@@ -32,9 +33,10 @@ export const getComments = async ({
   tweetID,
   signal,
 }: {
-  tweetID: string;
-  signal: AbortSignal | undefined;
-}): Promise<CommentType[]> => {
+  tweetID: string | undefined;
+  signal?: AbortSignal;
+}): Promise<CommentType[] | undefined> => {
+  if (!tweetID) return;
   const res = await axios.get<CommentType[]>(`/tweet/${tweetID}/comments`, {
     signal,
   });
@@ -72,8 +74,8 @@ export const deleteTweet = async ({ tweetId, userId }: ActionTweetProps) => {
 };
 
 type ActionCommentProps = {
-  userId: string;
-  tweetId: string;
+  userId: string | undefined;
+  tweetId: string | undefined;
   commentId?: string;
 };
 
@@ -91,6 +93,7 @@ export const createPost = async ({
   userId,
   body,
 }: ActionCommentProps & { body: string }) => {
+  if (!tweetId || !userId || !body) return;
   await axios.post(`/tweet/${tweetId}/comments`, {
     body,
     userId,

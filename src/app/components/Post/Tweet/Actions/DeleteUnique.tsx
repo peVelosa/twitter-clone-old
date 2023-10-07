@@ -3,46 +3,54 @@
 import { useSession } from "next-auth/react";
 import { FaTrash } from "react-icons/fa";
 import {
+  InfiniteData,
   MutationKey,
-  useInfiniteQuery,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { deleteTweet, getAllTweets } from "@/libs/api";
-import type { FC } from "react";
+import { deleteTweet } from "@/libs/api";
+import { type FC } from "react";
+import { TweetType } from "@/types/api";
 
 type DeleteUniqueProps = {
   ownerId: string;
   queryKey: MutationKey;
   tweetId: string;
-  replaceUrl: string;
 };
 
 const DeleteUnique: FC<DeleteUniqueProps> = ({
   ownerId,
-  replaceUrl,
   queryKey,
   tweetId,
 }) => {
   const { data: session } = useSession();
-
-  const { data } = useInfiniteQuery<any>({
-    queryKey: ["tweets"],
-    queryFn: getAllTweets,
-  });
-
   const queryClient = useQueryClient();
   const router = useRouter();
-
-  const mutate = useMutation({
+  const { mutate: _delete } = useMutation({
     mutationKey: ["tweets"],
     mutationFn: async () => {
+      router.back();
       await deleteTweet({ tweetId, userId: ownerId });
-      router.replace(replaceUrl);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries(["tweets"]);
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["tweets"] });
+
+      const previousTweets = queryClient.getQueryData(["tweets"]);
+      queryClient.setQueryData<unknown>(
+        ["tweets"],
+        (old: InfiniteData<TweetType[]>) => ({
+          ...old,
+          pages: old.pages.map((page) =>
+            page.filter((tweet) => tweet.id !== tweetId),
+          ),
+        }),
+      );
+
+      return { previousTweets };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(queryKey, context?.previousTweets);
     },
   });
 
@@ -50,9 +58,8 @@ const DeleteUnique: FC<DeleteUniqueProps> = ({
     <>
       <button
         className="p-2 hover:bg-red-300 rounded-full ml-auto block"
-        onClick={(e) => {
-          e.stopPropagation();
-          mutate.mutate();
+        onClick={() => {
+          _delete();
         }}
         disabled={!session?.user.id}
       >

@@ -1,5 +1,5 @@
 "use client";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllTweets } from "@/libs/api";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -17,6 +17,7 @@ type ClientHomePageProps = {
 const ClientHomePage: FC<ClientHomePageProps> = ({ initialData, session }) => {
   const { ref, inView } = useInView();
   const queryKey = ["tweets"];
+
   const {
     data: tweets,
     fetchNextPage,

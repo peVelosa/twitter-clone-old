@@ -1,19 +1,19 @@
 "use client";
 
-import { getComments, getSingleTweet } from "@/libs/api";
+import { getAllTweets, getComments, getSingleTweet } from "@/libs/api";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import PageTitle from "@/components/PageTitle";
 import HomeTweet from "@/components/Post/Tweet/HomeTweet";
+import Comment from "@/components/Post/Comment/Comment";
+import NewComment from "@/components/Post/Comment/NewComment";
 import type { FC } from "react";
 import type { Session } from "next-auth";
 import type { CommentType, SingleTweetType } from "@/types/api";
-import Comment from "@/components/Post/Comment/Comment";
-import NewComment from "@/components/Post/Comment/NewComment";
 
 type ClientTweetPageProps = {
   initialDataTweet: SingleTweetType;
+  initialDataTweetComments: CommentType[] | undefined;
   session: Session | null;
-  initialDataTweetComments: CommentType[];
 };
 
 const ClientTweetPage: FC<ClientTweetPageProps> = ({
@@ -21,6 +21,11 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
   session,
   initialDataTweetComments,
 }) => {
+  const {} = useInfiniteQuery({
+    queryKey: ["tweets"],
+    queryFn: getAllTweets,
+  });
+
   const { data: tweet } = useQuery({
     queryKey: ["tweets", initialDataTweet.id],
     queryFn: ({ signal }) =>
@@ -28,20 +33,26 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
     initialData: initialDataTweet,
   });
 
-  const commnentQueryKey = ["tweets", tweet.id, "comments"];
+  const commnentQueryKey = ["tweets", tweet?.id, "comments"];
 
   const { data: comments } = useInfiniteQuery({
     queryKey: commnentQueryKey,
     queryFn: ({ signal }) =>
-      getComments({ tweetID: initialDataTweet.id, signal }),
+      getComments({ tweetID: initialDataTweet?.id, signal }),
     initialData: {
       pageParams: [undefined],
       pages: [initialDataTweetComments],
     },
-    getNextPageParam: (lastPage, pages) =>
-      lastPage[lastPage.length - 1]?.id ?? undefined,
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage) return undefined;
+      return lastPage[lastPage.length - 1]?.id ?? undefined;
+    },
     refetchInterval: 1000 * 30,
   });
+
+  if (!tweet) {
+    throw new Error("This tweet has been deletet");
+  }
 
   return (
     <>
@@ -55,15 +66,16 @@ const ClientTweetPage: FC<ClientTweetPageProps> = ({
         tweetId={initialDataTweet.id}
       />
 
-      {comments?.pages.map((page) =>
-        page.map((comment) => (
-          <Comment
-            key={comment.id}
-            data={comment}
-            queryKey={commnentQueryKey}
-            userId={session?.user.id}
-          />
-        )),
+      {comments?.pages.map(
+        (page) =>
+          page?.map((comment) => (
+            <Comment
+              key={comment.id}
+              data={comment}
+              queryKey={commnentQueryKey}
+              userId={session?.user.id}
+            />
+          )),
       )}
     </>
   );
