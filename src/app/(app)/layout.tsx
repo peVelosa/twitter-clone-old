@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} overflow-x-hidden text-white`}>
         <div className="min-h-screen w-screen bg-gray-900 pb-8">
-          <div className="mx-auto flex w-full max-w-4xl gap-2 overflow-x-hidden">
+          <div className="mx-auto flex w-full max-w-4xl gap-2 overflow-x-hidden relative">
             <Providers>
               <Sidebar />
               <div className="w-full">
@@ -41,6 +41,7 @@ export default function RootLayout({
               </div>
             </Providers>
           </div>
+          <div id="modal"></div>
         </div>
       </body>
     </html>

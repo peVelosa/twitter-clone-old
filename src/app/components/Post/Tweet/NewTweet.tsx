@@ -132,9 +132,13 @@ const NewTweet: FC<NewTweetProps> = ({ className, session, onClose }) => {
           <div className="flex items-center justify-end gap-4">
             <CircularProgress length={tweetLength} />
             <button
-              onClick={() => postTweet({ tweetBody: tweetInput })}
+              onClick={() => {
+                tweetLength === 0 || tweetLength > 256
+                  ? null
+                  : postTweet({ tweetBody: tweetInput });
+              }}
               className="px-4 py-1 bg-sky-500 rounded-full hover:bg-sky-600 disabled:bg-sky-300 w-fit block"
-              disabled={tweetLength === 0 || tweetLength > 256}
+              aria-disabled={tweetLength === 0 || tweetLength > 256}
             >
               Tweet
             </button>

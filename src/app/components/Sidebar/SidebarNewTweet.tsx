@@ -5,7 +5,7 @@ import { FaFeatherAlt } from "react-icons/fa";
 import { SidebarItem } from "./SidebarItem";
 import Modal from "@/components/Modal/Modal";
 import type { Session } from "next-auth";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import NewTweet from "@/components/Post/Tweet/NewTweet";
 
 type SidebarNewTweetProps = {
@@ -15,6 +15,7 @@ type SidebarNewTweetProps = {
 const SidebarNewTweet: FC<SidebarNewTweetProps> = ({ session }) => {
   const searchParams = useSearchParams();
   const pathName = usePathname();
+  const router = useRouter();
   const showTweetModal = searchParams.get("showTweetModal");
 
   if (!session || !session.user) {
@@ -41,9 +42,12 @@ const SidebarNewTweet: FC<SidebarNewTweetProps> = ({ session }) => {
       <Modal
         isOpen={showTweetModal === "y"}
         urlParam="showTweetModal"
-        className="min-w-[500px] text-white"
+        className="md:min-w-[500px] text-white"
       >
-        <NewTweet session={session} />
+        <NewTweet
+          session={session}
+          onClose={() => router.replace(`${pathName}?${showTweetModal}=n`)}
+        />
       </Modal>
     </>
   );
